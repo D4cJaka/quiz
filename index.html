@@ -1,880 +1,3 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EconoQuiz - Economia per Ingegneri</title>
-    <style>
-        /* ===== STILE COMPLETO ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #6C63FF;
-            --primary-dark: #5A52D5;
-            --secondary: #FF6584;
-            --success: #2ECC71;
-            --danger: #E74C3C;
-            --warning: #F1C40F;
-            --dark: #2D3436;
-            --light: #F8F9FA;
-            --gray: #B2BEC3;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .app-container {
-            max-width: 520px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            margin: 20px auto;
-        }
-
-        .app-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .app-header .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .app-header .subtitle {
-            color: var(--gray);
-            font-size: 0.8rem;
-            margin-top: 3px;
-        }
-
-        /* ===== STATS ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .stat-card {
-            background: #f8f7ff;
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .stat-card .number {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .stat-card .number.green {
-            color: var(--success);
-        }
-        .stat-card .number.pink {
-            color: var(--secondary);
-        }
-        .stat-card .number.orange {
-            color: var(--warning);
-        }
-        .stat-card .label {
-            font-size: 0.6rem;
-            color: var(--gray);
-            margin-top: 2px;
-        }
-
-        /* ===== MENU ===== */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .menu-item {
-            background: #f8f7ff;
-            border-radius: 14px;
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .menu-item:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .menu-item .icon {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-        .menu-item .name {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-        .menu-item .desc {
-            font-size: 0.6rem;
-            color: var(--gray);
-            margin-top: 2px;
-        }
-        .menu-item.full {
-            grid-column: 1 / -1;
-        }
-        .menu-item.full .name {
-            color: white;
-        }
-        .menu-item.full .desc {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* ===== BUTTONS ===== */
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            text-align: center;
-            color: white;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-        }
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 101, 132, 0.4);
-        }
-
-        .btn-success {
-            background: var(--success);
-        }
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
-        }
-
-        .btn-outline {
-            background: #e8e8e8;
-            color: var(--dark);
-        }
-        .btn-outline:hover {
-            background: #d0d0d0;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: var(--dark);
-        }
-        .btn-warning:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.4);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .btn-group .btn {
-            font-size: 0.8rem;
-            padding: 10px 14px;
-        }
-
-        .btn-group-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .btn-group-3 .btn {
-            font-size: 0.7rem;
-            padding: 10px 8px;
-        }
-
-        /* ===== PROGRESS BAR ===== */
-        .progress-bar {
-            width: 100%;
-            height: 5px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress-bar .fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        /* ===== QUESTION CARD ===== */
-        .question-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border: 2px solid #f0f0f0;
-            display: none;
-        }
-
-        .question-card.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .question-number {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .question-topic {
-            display: inline-block;
-            background: #f0f0f0;
-            color: var(--dark);
-            font-size: 0.6rem;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-bottom: 8px;
-            margin-left: 4px;
-        }
-
-        .question-text {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 6px;
-        }
-
-        .option {
-            display: flex;
-            align-items: center;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 2px solid #e8e8e8;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: white;
-        }
-
-        .option:hover {
-            border-color: var(--primary);
-            background: #f8f7ff;
-        }
-
-        .option input[type="radio"] {
-            display: none;
-        }
-
-        .option .letter {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.7rem;
-            color: var(--dark);
-            margin-right: 10px;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-
-        .option.selected {
-            border-color: var(--primary);
-            background: #f8f7ff;
-        }
-
-        .option.selected .letter {
-            background: var(--primary);
-            color: white;
-        }
-
-        .option.correct {
-            border-color: var(--success);
-            background: #e8f8f0;
-        }
-
-        .option.correct .letter {
-            background: var(--success);
-            color: white;
-        }
-
-        .option.wrong {
-            border-color: var(--danger);
-            background: #fde8e8;
-        }
-
-        .option.wrong .letter {
-            background: var(--danger);
-            color: white;
-        }
-
-        .option.skipped {
-            border-color: var(--warning);
-            background: #fef9e7;
-        }
-
-        .option.skipped .letter {
-            background: var(--warning);
-            color: white;
-        }
-
-        .option.disabled {
-            cursor: default;
-            opacity: 0.8;
-        }
-
-        .option.disabled:hover {
-            border-color: #e8e8e8;
-            background: white;
-        }
-
-        /* ===== QUIZ NAV ===== */
-        .quiz-nav {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .quiz-nav .btn {
-            flex: 1;
-            font-size: 0.8rem;
-            padding: 10px;
-        }
-
-        /* ===== RESULTS ===== */
-        .result-container {
-            text-align: center;
-            padding: 15px 0;
-        }
-
-        .result-score {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin: 5px 0;
-        }
-
-        .result-score .total {
-            font-size: 1.3rem;
-            color: var(--gray);
-        }
-
-        .result-message {
-            font-size: 1rem;
-            margin: 5px 0 15px;
-        }
-
-        .result-stats-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin: 15px 0;
-        }
-
-        .result-stat-item {
-            background: #f8f7ff;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .result-stat-item .value {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        .result-stat-item .label {
-            font-size: 0.55rem;
-            color: var(--gray);
-        }
-
-        .error-detail {
-            background: #fde8e8;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 8px 0;
-            border-left: 4px solid var(--danger);
-        }
-
-        .success-detail {
-            background: #e8f8f0;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 8px 0;
-            border-left: 4px solid var(--success);
-        }
-
-        .skipped-detail {
-            background: #fef9e7;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 8px 0;
-            border-left: 4px solid var(--warning);
-        }
-
-        .error-detail .your-answer {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--danger);
-        }
-
-        .error-detail .correct-answer {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        .error-detail .explanation {
-            font-size: 0.8rem;
-            margin-top: 6px;
-            color: var(--dark);
-        }
-
-        .error-detail .reference {
-            font-size: 0.65rem;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-
-        /* ===== WEAK TOPICS ===== */
-        .weak-topics {
-            margin-top: 15px;
-            padding: 12px;
-            background: #f8f7ff;
-            border-radius: 14px;
-        }
-
-        .weak-topics .title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 8px;
-        }
-
-        .weak-topic-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 0.8rem;
-        }
-
-        .weak-topic-item .errors {
-            color: var(--danger);
-            font-weight: 700;
-        }
-
-        /* ===== STUDY SECTION ===== */
-        .study-section {
-            padding: 5px 0;
-        }
-
-        .study-topic {
-            background: #f8f7ff;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            overflow: hidden;
-            border: 1px solid #f0f0f0;
-        }
-
-        .study-topic-header {
-            padding: 12px 15px;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            transition: background 0.2s;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .study-topic-header:hover {
-            background: #f8f7ff;
-        }
-
-        .study-topic-header .arrow {
-            transition: transform 0.3s ease;
-            font-size: 0.8rem;
-        }
-
-        .study-topic-header .arrow.open {
-            transform: rotate(180deg);
-        }
-
-        .study-topic-content {
-            padding: 0 15px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.3s ease;
-            background: white;
-        }
-
-        .study-topic-content.open {
-            padding: 12px 15px;
-            max-height: 5000px;
-        }
-
-        .study-topic-content .study-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #f5f5f5;
-            font-size: 0.8rem;
-            line-height: 1.5;
-        }
-
-        .study-topic-content .study-item:last-child {
-            border-bottom: none;
-        }
-
-        .study-topic-content .study-item strong {
-            color: var(--primary);
-        }
-
-        .study-topic-content .study-item .slide-ref {
-            display: inline-block;
-            background: #f0f0f0;
-            padding: 1px 8px;
-            border-radius: 10px;
-            font-size: 0.65rem;
-            color: var(--gray);
-            margin-left: 5px;
-        }
-
-        .study-topic-content .study-item .highlight {
-            background: #fef9e7;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* ===== UTILITY ===== */
-        .hidden {
-            display: none !important;
-        }
-        .mt-10 {
-            margin-top: 10px;
-        }
-        .mt-15 {
-            margin-top: 15px;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-muted {
-            color: var(--gray);
-            font-size: 0.65rem;
-        }
-        .mb-10 {
-            margin-bottom: 10px;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .app-container {
-                padding: 15px;
-                border-radius: 20px;
-            }
-            .result-score {
-                font-size: 2.8rem;
-            }
-            .stats-grid {
-                gap: 5px;
-            }
-            .stat-card {
-                padding: 6px;
-            }
-            .stat-card .number {
-                font-size: 1.1rem;
-            }
-            .question-text {
-                font-size: 0.9rem;
-            }
-            .option {
-                padding: 8px 12px;
-            }
-            .menu-item {
-                padding: 12px 8px;
-            }
-            .menu-item .icon {
-                font-size: 1.5rem;
-            }
-            .study-topic-header {
-                font-size: 0.75rem;
-                padding: 10px 12px;
-            }
-            .study-topic-content .study-item {
-                font-size: 0.75rem;
-            }
-            .btn-group-3 {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="app-container" id="app">
-
-        <!-- ===== HEADER ===== -->
-        <div class="app-header">
-            <div class="logo">📚 EconoQuiz</div>
-            <div class="subtitle">Economia per Ingegneri - A.A. 2025/2026</div>
-        </div>
-
-        <!-- ===== HOME PAGE ===== -->
-        <div id="homePage">
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card">
-                    <div class="number" id="statQuiz">0</div>
-                    <div class="label">Quiz fatti</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number green" id="statMedia">0%</div>
-                    <div class="label">Media</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number pink" id="statCompletato">0%</div>
-                    <div class="label">Completato</div>
-                </div>
-            </div>
-
-            <div class="menu-grid">
-                <div class="menu-item full" onclick="iniziaQuiz()" style="background:linear-gradient(135deg,#6C63FF,#5A52D5);border-color:var(--primary);">
-                    <div class="icon" style="color:white;">🚀</div>
-                    <div class="name" style="color:white;">Nuovo Quiz</div>
-                    <div class="desc" style="color:rgba(255,255,255,0.7);">6 domande - puoi saltare</div>
-                </div>
-                <div class="menu-item" onclick="mostraProgressi()">
-                    <div class="icon">📊</div>
-                    <div class="name">Progressi</div>
-                    <div class="desc">Statistiche dettagliate</div>
-                </div>
-                <div class="menu-item" onclick="mostraStudio()">
-                    <div class="icon">📖</div>
-                    <div class="name">Studio</div>
-                    <div class="desc">Materiale dalle slide</div>
-                </div>
-                <div class="menu-item" onclick="mostraErrori()">
-                    <div class="icon">🔴</div>
-                    <div class="name">Errori</div>
-                    <div class="desc">Argomenti da ripassare</div>
-                </div>
-                <div class="menu-item" onclick="mostraCronologia()">
-                    <div class="icon">📋</div>
-                    <div class="name">Cronologia</div>
-                    <div class="desc">Ultimi quiz</div>
-                </div>
-                <div class="menu-item" onclick="resetProgressi()">
-                    <div class="icon">🔄</div>
-                    <div class="name">Reset</div>
-                    <div class="desc">Cancella tutti i dati</div>
-                </div>
-            </div>
-
-            <div class="weak-topics" id="weakTopics">
-                <div class="title">🔴 Argomenti da ripassare</div>
-                <div id="weakTopicsList">
-                    <div class="text-muted" style="padding:8px 0;">Nessun errore registrato. Continua così! 🎉</div>
-                </div>
-            </div>
-
-            <div class="text-center mt-10">
-                <span class="text-muted">Domande totali disponibili: <span id="totaleDomande">0</span></span>
-            </div>
-        </div>
-
-        <!-- ===== QUIZ PAGE ===== -->
-        <div id="quizPage" class="hidden">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="font-weight:700;font-size:1rem;">📝 Quiz</span>
-                <span id="quizProgress" style="font-size:0.8rem;color:var(--gray);">Domanda 1 di 6</span>
-            </div>
-            <div class="progress-bar">
-                <div class="fill" id="progressFill" style="width:0%;"></div>
-            </div>
-            <div id="questionsContainer"></div>
-            <div class="quiz-nav">
-                <button class="btn btn-outline" id="prevBtn" style="display:none;" onclick="cambiaDomanda(-1)">⬅ Indietro</button>
-                <button class="btn btn-warning" id="skipBtn" onclick="saltaDomanda()">⏭ Salta</button>
-                <button class="btn btn-primary" id="nextBtn" onclick="cambiaDomanda(1)">Avanti ➡</button>
-                <button class="btn btn-success" id="submitBtn" style="display:none;" onclick="inviaQuiz()">✅ Invia</button>
-            </div>
-            <button class="btn btn-outline mt-10" onclick="tornaHome()">🏠 Menù</button>
-        </div>
-
-        <!-- ===== RESULTS PAGE ===== -->
-        <div id="resultPage" class="hidden">
-            <div class="result-container">
-                <div class="result-score" id="resultScore">0<span class="total">/6</span></div>
-                <div class="result-message" id="resultMessage"></div>
-            </div>
-            <div class="result-stats-summary">
-                <div class="result-stat-item">
-                    <div class="value" style="color:var(--success);" id="rCorrette">0</div>
-                    <div class="label">Corrette</div>
-                </div>
-                <div class="result-stat-item">
-                    <div class="value" style="color:var(--warning);" id="rSaltate">0</div>
-                    <div class="label">Saltate</div>
-                </div>
-                <div class="result-stat-item">
-                    <div class="value" style="color:var(--danger);" id="rSbagliate">0</div>
-                    <div class="label">Sbagliate</div>
-                </div>
-            </div>
-            <div style="text-align:center;font-size:0.8rem;color:var(--gray);margin-bottom:12px;" id="resultStats">
-                Quiz completati: 0 • Media generale: 0%
-            </div>
-            <div id="resultDetails"></div>
-            <div class="btn-group" style="margin-top:15px;">
-                <button class="btn btn-primary" onclick="iniziaQuiz()">🔄 Nuovo Quiz</button>
-                <button class="btn btn-secondary" onclick="tornaHome()">🏠 Menù</button>
-            </div>
-        </div>
-
-        <!-- ===== PROGRESS PAGE ===== -->
-        <div id="progressPage" class="hidden">
-            <h3 style="font-size:1rem;margin-bottom:12px;">📊 Progressi Dettagliati</h3>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="number" id="pQuiz">0</div>
-                    <div class="label">Quiz fatti</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number green" id="pDomande">0</div>
-                    <div class="label">Domande totali</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number pink" id="pCorrette">0</div>
-                    <div class="label">Risposte corrette</div>
-                </div>
-            </div>
-            <div style="margin-top:12px;">
-                <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px;">
-                    <span>Progresso domande</span>
-                    <span id="pProgressoTesto">0/0</span>
-                </div>
-                <div class="progress-bar" style="height:8px;">
-                    <div class="fill" id="pProgressoBar" style="width:0%;"></div>
-                </div>
-            </div>
-            <h4 style="font-size:0.85rem;margin:15px 0 8px;">🔴 Errori per argomento</h4>
-            <div id="pErrori"></div>
-            <h4 style="font-size:0.85rem;margin:15px 0 8px;">📋 Ultimi quiz</h4>
-            <div id="pCronologia"></div>
-            <div class="btn-group mt-15">
-                <button class="btn btn-secondary" onclick="tornaHome()">🏠 Menù</button>
-                <button class="btn btn-outline" onclick="esportaDati()">💾 Esporta</button>
-            </div>
-        </div>
-
-        <!-- ===== ERRORI PAGE ===== -->
-        <div id="erroriPage" class="hidden">
-            <h3 style="font-size:1rem;margin-bottom:12px;">🔴 Errori per Argomento</h3>
-            <div id="erroriList"></div>
-            <div class="btn-group mt-15">
-                <button class="btn btn-secondary" onclick="tornaHome()">🏠 Menù</button>
-                <button class="btn btn-primary" onclick="iniziaQuiz()">🚀 Nuovo Quiz</button>
-            </div>
-        </div>
-
-        <!-- ===== CRONOLOGIA PAGE ===== -->
-        <div id="cronologiaPage" class="hidden">
-            <h3 style="font-size:1rem;margin-bottom:12px;">📋 Cronologia Completa</h3>
-            <div id="cronologiaList"></div>
-            <div class="btn-group mt-15">
-                <button class="btn btn-secondary" onclick="tornaHome()">🏠 Menù</button>
-                <button class="btn btn-outline" onclick="esportaDati()">💾 Esporta</button>
-            </div>
-        </div>
-
-        <!-- ===== STUDIO PAGE ===== -->
-        <div id="studioPage" class="hidden">
-            <h3 style="font-size:1rem;margin-bottom:8px;">📖 Materiale di Studio</h3>
-            <p style="font-size:0.7rem;color:var(--gray);margin-bottom:12px;">Contenuti tratti dalle slide del corso. Clicca su ogni argomento per espanderlo.</p>
-            <div class="study-section" id="studyContainer"></div>
-            <button class="btn btn-secondary mt-15" onclick="tornaHome()">🏠 Menù</button>
-        </div>
-
-    </div>
-
-    <script>
-        // ============================================================
-        // BANCA DATI DOMANDE (60+ domande - TUTTE CON UNA SBAGLIATA)
-        // ============================================================
 const DOMANDE = [
     // ============================================================
     // LEZIONE 1 - PRINCIPIO COSTI-BENEFICI (ID 1-15)
@@ -930,10 +53,10 @@ const DOMANDE = [
         opzioni: [
             'L\'approccio costi-benefici confronta benefici e costi di un\'azione',
             'La regola decisionale è: fai x se B(x) > C(x)',
-            'Costi e benefici vanno misurati solo in termini monetari',
-            'Costi e benefici possono essere misurati anche in termini non monetari'
+            'Costi e benefici vanno misurati in termini monetari',
+            'Costi e benefici possono essere misurati solo in termini non monetari'
         ],
-        corretta: 2,
+        corretta: 3,
         spiegazione: 'Una valutazione monetaria è utile anche quando l\'attività non ha implicazioni monetarie dirette.'
     }, {
         id: 5,
@@ -1032,7 +155,7 @@ const DOMANDE = [
             'Il principio costi-benefici aiuta a prendere decisioni razionali'
         ],
         corretta: 0,
-        spiegazione: 'Il principio costi-benefici è applicabile anche a decisioni non monetarie.'
+        spiegazione: 'Il principio costi-benefici è applicabile anche a decisioni non monetarie (es. alzarsi per bere acqua).'
     }, {
         id: 12,
         argomento: 'Principio Costi-Benefici',
@@ -1102,7 +225,7 @@ const DOMANDE = [
         domanda: 'Quali affermazioni sul costo-opportunità sono corrette?',
         opzioni: [
             'Il costo-opportunità è il valore dell\'alternativa migliore a cui si rinuncia',
-            'Il costo-opportunità ha natura non-monetaria in molte decisioni',
+            'Il costo-opportunità ha natura non-monetaria',
             'Il costo-opportunità va ignorato perché non è un esborso di denaro',
             'Ogni risorsa, incluso il tempo, ha un costo-opportunità'
         ],
@@ -1129,7 +252,7 @@ const DOMANDE = [
         slide: 'Pag. 22-27',
         domanda: 'Quali affermazioni sugli errori decisionali sono corrette?',
         opzioni: [
-            'Misurare costi e benefici in percentuale può essere utile in alcuni contesti',
+            'Misurare costi e benefici in percentuale è spesso più intuitivo',
             'Il beneficio marginale è il beneficio per un\'unità aggiuntiva',
             'Il costo marginale è il costo per un\'unità aggiuntiva',
             'Il principio costi-benefici usa il beneficio medio, non quello marginale'
@@ -1237,7 +360,7 @@ const DOMANDE = [
     },
 
     // ============================================================
-    // LEZIONE 2 - DOMANDA E OFFERTA (ID 26-45)
+    // LEZIONE 2 - DOMANDA E OFFERTA (ID 26-40)
     // ============================================================
     {
         id: 26,
@@ -1274,10 +397,10 @@ const DOMANDE = [
         slide: 'Pag. 20-28',
         domanda: 'Quali fattori causano uno spostamento della curva di domanda?',
         opzioni: [
-            'Un aumento del reddito per un bene normale sposta la curva a destra',
-            'Un aumento del prezzo di un bene sostituto sposta la curva a destra',
-            'Una variazione del prezzo del bene stesso sposta la curva di domanda',
-            'Un cambiamento dei gusti dei consumatori sposta la curva di domanda'
+            'Aumento del reddito per un bene normale → sposta a destra',
+            'Aumento del prezzo di un sostituto → sposta a destra',
+            'Variazione del prezzo del bene stesso → sposta la curva',
+            'Cambiamento dei gusti → sposta la curva'
         ],
         corretta: 2,
         spiegazione: 'La variazione del prezzo del bene stesso provoca un MOVIMENTO LUNGO la curva, non uno spostamento.'
@@ -1288,10 +411,10 @@ const DOMANDE = [
         slide: 'Pag. 29-33',
         domanda: 'Quali fattori causano uno spostamento della curva di offerta?',
         opzioni: [
-            'Un miglioramento della tecnologia sposta la curva a destra',
-            'Un aumento dei prezzi dei fattori produttivi sposta la curva a sinistra',
-            'Una variazione del prezzo del bene sposta la curva di offerta',
-            'Una regolamentazione più rigida sposta la curva a sinistra'
+            'Miglioramento tecnologico → sposta a destra',
+            'Aumento dei prezzi dei fattori produttivi → sposta a sinistra',
+            'Variazione del prezzo del bene → sposta la curva',
+            'Regolamentazione più rigida → sposta a sinistra'
         ],
         corretta: 2,
         spiegazione: 'La variazione del prezzo del bene stesso provoca un MOVIMENTO LUNGO la curva, non uno spostamento.'
@@ -1302,13 +425,13 @@ const DOMANDE = [
         slide: 'Pag. 20-21',
         domanda: 'Quali affermazioni sui beni correlati sono corrette?',
         opzioni: [
-            'Autobus e metropolitana sono beni sostituti',
-            'Petrolio e automobili sono beni complementari',
-            'Un aumento del prezzo di un bene riduce la domanda dei suoi complementari',
-            'Un aumento del prezzo di un bene riduce la domanda dei suoi sostituti'
+            'Autobus e metro sono beni sostituti',
+            'Petrolio e auto sono beni complementari',
+            'L\'aumento del prezzo di un bene riduce la domanda dei suoi complementari',
+            'L\'aumento del prezzo di un bene riduce la domanda dei suoi sostituti'
         ],
         corretta: 3,
-        spiegazione: 'Un aumento del prezzo di un bene AUMENTA la domanda dei suoi sostituti (es. caffè e tè).'
+        spiegazione: 'Un aumento del prezzo di un bene AUMENTA la domanda dei suoi sostituti.'
     }, {
         id: 31,
         argomento: 'Domanda e Offerta',
@@ -1401,8 +524,8 @@ const DOMANDE = [
         domanda: 'Quali affermazioni sugli spostamenti della domanda sono corrette?',
         opzioni: [
             'La curva di domanda di mercato si ottiene dalla somma orizzontale delle curve di domanda individuali',
-            'Un aumento del reddito del consumatore sposta la curva di domanda verso destra per un bene normale',
-            'Una variazione del prezzo del bene stesso sposta la curva di domanda',
+            'Un aumento del reddito del consumatore, a parità di prezzi, sposta la curva di domanda verso destra per un bene normale',
+            'Un aumento del prezzo di un bene provoca uno spostamento della curva di domanda',
             'Un cambiamento dei gusti dei consumatori sposta la curva di domanda'
         ],
         corretta: 2,
@@ -1414,13 +537,13 @@ const DOMANDE = [
         slide: 'Pag. 8-12',
         domanda: 'Quali affermazioni sul prezzo di equilibrio sono corrette?',
         opzioni: [
-            'Il prezzo di equilibrio si ha quando Qd = Qs',
-            'Se P > Pe, si verifica un eccesso di offerta',
-            'Se P < Pe, si verifica un eccesso di domanda',
+            'Il prezzo di equilibrio del mercato si ha quando quantità domandata e quantità offerta si eguagliano',
+            'Se il prezzo è superiore a quello di equilibrio, si verifica un eccesso di offerta',
+            'Se il prezzo è inferiore a quello di equilibrio, si verifica un eccesso di domanda',
             'In caso di eccesso di domanda, la quantità scambiata è determinata dalla quantità domandata'
         ],
         corretta: 3,
-        spiegazione: 'In caso di eccesso di domanda, la quantità scambiata è determinata dalla quantità OFFERTA (la minore delle due).'
+        spiegazione: 'In caso di eccesso di domanda (P < Pe), la quantità scambiata è determinata dalla quantità OFFERTA (la minore delle due).'
     }, {
         id: 39,
         argomento: 'Domanda e Offerta',
@@ -1434,7 +557,7 @@ const DOMANDE = [
             'In equilibrio, i produttori possono vendere tutto ciò che desiderano al prezzo corrente'
         ],
         corretta: 3,
-        spiegazione: 'In equilibrio, i produttori vendono ESATTAMENTE la quantità che i consumatori vogliono acquistare.'
+        spiegazione: 'In equilibrio, i produttori possono vendere ESATTAMENTE la quantità che i consumatori vogliono acquistare, non tutto ciò che desiderano.'
     }, {
         id: 40,
         argomento: 'Domanda e Offerta',
@@ -1448,126 +571,56 @@ const DOMANDE = [
             'La legge della domanda afferma che la quantità domandata aumenta all\'aumentare del prezzo'
         ],
         corretta: 3,
-        spiegazione: 'La legge della domanda afferma che la quantità domandata DIMINUISCE all\'aumentare del prezzo.'
-    }, {
-        id: 41,
-        argomento: 'Domanda e Offerta',
-        lezione: 'Lezione 2',
-        slide: 'Pag. 29-33',
-        domanda: 'Quali affermazioni sugli spostamenti dell\'offerta sono corrette?',
-        opzioni: [
-            'Un progresso tecnologico sposta la curva di offerta verso destra',
-            'Un aumento del salario sposta la curva di offerta verso sinistra',
-            'Una riduzione del prezzo delle materie prime sposta la curva di offerta verso destra',
-            'Una variazione del prezzo del bene sposta la curva di offerta'
-        ],
-        corretta: 3,
-        spiegazione: 'La variazione del prezzo del bene provoca un MOVIMENTO LUNGO la curva, non uno spostamento.'
-    }, {
-        id: 42,
-        argomento: 'Domanda e Offerta',
-        lezione: 'Lezione 2',
-        slide: 'Pag. 20-21',
-        domanda: 'Quali affermazioni sui beni sostituti sono corrette?',
-        opzioni: [
-            'Due beni sono sostituti se l\'aumento del prezzo di uno aumenta la domanda dell\'altro',
-            'Caffè e tè sono beni sostituti',
-            'Burro e margarina sono beni sostituti',
-            'Auto e benzina sono beni sostituti'
-        ],
-        corretta: 3,
-        spiegazione: 'Auto e benzina sono beni COMPLEMENTARI, non sostituti.'
-    }, {
-        id: 43,
-        argomento: 'Domanda e Offerta',
-        lezione: 'Lezione 2',
-        slide: 'Pag. 20-21',
-        domanda: 'Quali affermazioni sui beni complementari sono corrette?',
-        opzioni: [
-            'Due beni sono complementari se l\'aumento del prezzo di uno riduce la domanda dell\'altro',
-            'Auto e benzina sono beni complementari',
-            'Stampanti e cartucce sono beni complementari',
-            'Caffè e tè sono beni complementari'
-        ],
-        corretta: 3,
-        spiegazione: 'Caffè e tè sono beni SOSTITUTI, non complementari.'
-    }, {
-        id: 44,
-        argomento: 'Domanda e Offerta',
-        lezione: 'Lezione 2',
-        slide: 'Pag. 22-23',
-        domanda: 'Quali affermazioni sui beni normali e inferiori sono corrette?',
-        opzioni: [
-            'I beni normali hanno domanda che aumenta all\'aumentare del reddito',
-            'I beni inferiori hanno domanda che diminuisce all\'aumentare del reddito',
-            'Il pane scuro è un esempio di bene inferiore per molti consumatori',
-            'I beni di lusso sono sempre beni inferiori'
-        ],
-        corretta: 3,
-        spiegazione: 'I beni di lusso sono beni NORMALI (non inferiori), con elasticità al reddito > 1.'
-    }, {
-        id: 45,
-        argomento: 'Domanda e Offerta',
-        lezione: 'Lezione 2',
-        slide: 'Pag. 22-23',
-        domanda: 'Quali affermazioni sui beni di lusso sono corrette?',
-        opzioni: [
-            'I beni di lusso hanno un\'elasticità della domanda al reddito maggiore di 1',
-            'Un aumento del reddito provoca un aumento più che proporzionale della domanda di beni di lusso',
-            'Le automobili di lusso sono beni di lusso',
-            'I beni di lusso hanno un\'elasticità della domanda al reddito negativa'
-        ],
-        corretta: 3,
-        spiegazione: 'I beni di lusso hanno elasticità al reddito POSITIVA e maggiore di 1, non negativa.'
+        spiegazione: 'La legge della domanda afferma che la quantità domandata DIMINUISCE all\'aumentare del prezzo (relazione inversa).'
     },
 
     // ============================================================
-    // LEZIONE 3 - ELASTICITÀ (ID 46-65)
+    // LEZIONE 3 - ELASTICITÀ (ID 41-60)
     // ============================================================
     {
-        id: 46,
+        id: 41,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 9-11',
         domanda: 'Quali affermazioni sull\'elasticità della domanda sono corrette?',
         opzioni: [
-            'L\'elasticità della domanda rispetto al prezzo è sempre negativa (o zero)',
-            'Se il coefficiente di elasticità in valore assoluto è maggiore di 1, la domanda è elastica',
-            'L\'elasticità è costante in tutti i punti di una curva di domanda lineare',
-            'Quanto più un bene ha sostituti stretti, tanto più elastica è la sua domanda'
+            'L\'elasticità è sempre negativa (o zero)',
+            'Se |ε| > 1, la domanda è elastica',
+            'L\'elasticità è costante in tutti i punti di una curva lineare',
+            'Più sostituti ha un bene, più elastica è la sua domanda'
         ],
         corretta: 2,
         spiegazione: 'L\'elasticità VARIA in ogni punto di una curva lineare.'
     }, {
-        id: 47,
+        id: 42,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 18-19',
         domanda: 'Quali affermazioni su domanda elastica e rigida sono corrette?',
         opzioni: [
-            'Se la domanda è elastica, una riduzione del prezzo aumenta il ricavo totale',
-            'Se la domanda è rigida, un aumento del prezzo aumenta il ricavo totale',
-            'Il ricavo totale è massimo quando l\'elasticità è pari a 1',
-            'Se la domanda è elastica, un aumento del prezzo aumenta il ricavo totale'
+            'Se elastica, ridurre il prezzo aumenta il ricavo',
+            'Se rigida, aumentare il prezzo aumenta il ricavo',
+            'Il ricavo è massimo quando |ε| = 1',
+            'Se elastica, aumentare il prezzo aumenta il ricavo'
         ],
         corretta: 3,
-        spiegazione: 'Se la domanda è elastica, un AUMENTO del prezzo RIDUCE il ricavo totale.'
+        spiegazione: 'Se elastica (|ε| > 1), un AUMENTO del prezzo RIDUCE il ricavo.'
     }, {
-        id: 48,
+        id: 43,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 27-29',
         domanda: 'Quali affermazioni sull\'elasticità incrociata sono corrette?',
         opzioni: [
-            'L\'elasticità incrociata è positiva per i beni sostituti',
-            'L\'elasticità incrociata è negativa per i beni complementari',
+            'È positiva per i beni sostituti',
+            'È negativa per i beni complementari',
             'Tè e caffè hanno elasticità incrociata positiva',
             'Auto e benzina hanno elasticità incrociata positiva'
         ],
         corretta: 3,
         spiegazione: 'Auto e benzina sono beni COMPLEMENTARI, quindi l\'elasticità incrociata è NEGATIVA.'
     }, {
-        id: 49,
+        id: 44,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 31-34',
@@ -1575,13 +628,13 @@ const DOMANDE = [
         opzioni: [
             'Per i beni inferiori è negativa',
             'Per i beni normali è positiva (0 < η < 1)',
-            'Per i beni di lusso è maggiore di 1',
+            'Per i beni di lusso è > 1',
             'Per i beni inferiori è positiva'
         ],
         corretta: 3,
         spiegazione: 'Per i beni INFERIORI, l\'elasticità al reddito è NEGATIVA.'
     }, {
-        id: 50,
+        id: 45,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 12-17',
@@ -1595,7 +648,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'elasticità della domanda è sempre negativa (o zero). Si usa il valore assoluto per comodità.'
     }, {
-        id: 51,
+        id: 46,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 19-21',
@@ -1609,7 +662,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'La pubblicità può influenzare l\'elasticità creando fedeltà alla marca.'
     }, {
-        id: 52,
+        id: 47,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 22-23',
@@ -1623,7 +676,7 @@ const DOMANDE = [
         corretta: 2,
         spiegazione: 'Con domanda rigida, le fluttuazioni dell\'offerta causano GRANDI variazioni di prezzo.'
     }, {
-        id: 53,
+        id: 48,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 27-29',
@@ -1637,7 +690,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'elasticità incrociata può essere positiva (sostituti) o negativa (complementari).'
     }, {
-        id: 54,
+        id: 49,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 31-34',
@@ -1651,7 +704,35 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'I beni inferiori hanno elasticità al reddito NEGATIVA.'
     }, {
-        id: 55,
+        id: 50,
+        argomento: 'Elasticità della Domanda',
+        lezione: 'Lezione 3',
+        slide: 'Pag. 9-11',
+        domanda: 'Quali affermazioni sull\'elasticità della domanda sono corrette?',
+        opzioni: [
+            'L\'elasticità della domanda rispetto al prezzo è sempre negativa',
+            'Se il coefficiente di elasticità in valore assoluto è maggiore di 1, la domanda è elastica',
+            'L\'elasticità è costante in tutti i punti di una curva di domanda lineare',
+            'Quanto più un bene ha sostituti stretti, tanto più elastica è la sua domanda'
+        ],
+        corretta: 2,
+        spiegazione: 'L\'elasticità VARIA in ogni punto di una curva lineare: è infinita all\'intercetta verticale e zero all\'intercetta orizzontale.'
+    }, {
+        id: 51,
+        argomento: 'Elasticità Incrociata e Reddito',
+        lezione: 'Lezione 3',
+        slide: 'Pag. 27-34',
+        domanda: 'Quali affermazioni sulle elasticità sono corrette?',
+        opzioni: [
+            'L\'elasticità incrociata della domanda è positiva per i beni sostituti',
+            'L\'elasticità incrociata della domanda è negativa per i beni complementari',
+            'L\'elasticità della domanda rispetto al reddito è negativa per i beni inferiori',
+            'L\'elasticità della domanda rispetto al reddito è negativa per i beni normali'
+        ],
+        corretta: 3,
+        spiegazione: 'Per i beni NORMALI, l\'elasticità al reddito è POSITIVA (0 < η < 1). Per i beni inferiori è negativa.'
+    }, {
+        id: 52,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 18-19',
@@ -1663,9 +744,9 @@ const DOMANDE = [
             'Se la domanda è elastica, un aumento del prezzo aumenta il ricavo totale'
         ],
         corretta: 3,
-        spiegazione: 'Se la domanda è elastica, un aumento del prezzo RIDUCE il ricavo totale.'
+        spiegazione: 'Se la domanda è elastica (|ε| > 1), un aumento del prezzo RIDUCE il ricavo totale.'
     }, {
-        id: 56,
+        id: 53,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 12-17',
@@ -1679,7 +760,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'elasticità si calcola come rapporto tra VARIAZIONI PERCENTUALI, non assolute.'
     }, {
-        id: 57,
+        id: 54,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 19-21',
@@ -1691,9 +772,9 @@ const DOMANDE = [
             'I beni di lusso hanno domanda anelastica'
         ],
         corretta: 3,
-        spiegazione: 'I beni di lusso hanno domanda ELASTICA (non anelastica).'
+        spiegazione: 'I beni di lusso hanno domanda ELASTICA (non anelastica) perché i consumatori possono rinunciarvi più facilmente.'
     }, {
-        id: 58,
+        id: 55,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 27-34',
@@ -1707,7 +788,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'elasticità incrociata può essere positiva (sostituti) o negativa (complementari).'
     }, {
-        id: 59,
+        id: 56,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 31-34',
@@ -1721,7 +802,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Per i beni di lusso, l\'elasticità al reddito è MAGGIORE di 1.'
     }, {
-        id: 60,
+        id: 57,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 22-23',
@@ -1733,9 +814,9 @@ const DOMANDE = [
             'L\'elasticità non influisce sulla distribuzione dell\'onere di un\'imposta'
         ],
         corretta: 3,
-        spiegazione: 'L\'elasticità influenza la distribuzione dell\'onere di un\'imposta.'
+        spiegazione: 'L\'elasticità influenza la distribuzione dell\'onere di un\'imposta: se la domanda è rigida, l\'imposta ricade sui consumatori.'
     }, {
-        id: 61,
+        id: 58,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 12-17',
@@ -1749,7 +830,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'elasticità varia da bene a bene e da punto a punto sulla curva di domanda.'
     }, {
-        id: 62,
+        id: 59,
         argomento: 'Elasticità Incrociata e Reddito',
         lezione: 'Lezione 3',
         slide: 'Pag. 27-34',
@@ -1763,7 +844,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'elasticità incrociata è positiva per i sostituti e negativa per i complementari.'
     }, {
-        id: 63,
+        id: 60,
         argomento: 'Elasticità della Domanda',
         lezione: 'Lezione 3',
         slide: 'Pag. 18-19',
@@ -1775,84 +856,56 @@ const DOMANDE = [
             'Se |ε| = 0, la domanda è perfettamente elastica'
         ],
         corretta: 3,
-        spiegazione: 'Se |ε| = 0, la domanda è PERFETTAMENTE ANELASTICA (rigida).'
-    }, {
-        id: 64,
-        argomento: 'Elasticità Incrociata e Reddito',
-        lezione: 'Lezione 3',
-        slide: 'Pag. 27-34',
-        domanda: 'Quali affermazioni sui beni sostituti e complementari sono corrette?',
-        opzioni: [
-            'I beni sostituti hanno elasticità incrociata positiva',
-            'I beni complementari hanno elasticità incrociata negativa',
-            'Tè e caffè sono sostituti con elasticità incrociata positiva',
-            'Auto e benzina sono sostituti con elasticità incrociata positiva'
-        ],
-        corretta: 3,
-        spiegazione: 'Auto e benzina sono COMPLEMENTARI, non sostituti.'
-    }, {
-        id: 65,
-        argomento: 'Elasticità della Domanda',
-        lezione: 'Lezione 3',
-        slide: 'Pag. 9-11',
-        domanda: 'Quali affermazioni sull\'elasticità della domanda sono corrette?',
-        opzioni: [
-            'L\'elasticità misura la reattività della quantità domandata al prezzo',
-            'L\'elasticità è il rapporto tra variazioni percentuali',
-            'L\'elasticità è sempre negativa per la domanda',
-            'L\'elasticità è sempre positiva per la domanda'
-        ],
-        corretta: 3,
-        spiegazione: 'L\'elasticità della domanda è sempre NEGATIVA (o zero).'
+        spiegazione: 'Se |ε| = 0, la domanda è PERFETTAMENTE ANELASTICA (rigida), non perfettamente elastica.'
     },
 
     // ============================================================
-    // LEZIONE 4 - TEORIA DEL CONSUMATORE (ID 66-80)
+    // LEZIONE 4 - TEORIA DEL CONSUMATORE (ID 61-75)
     // ============================================================
     {
-        id: 66,
+        id: 61,
         argomento: 'Vincolo di Bilancio',
         lezione: 'Lezione 4',
         slide: 'Pag. 5-8',
         domanda: 'Quali affermazioni sul vincolo di bilancio sono corrette?',
         opzioni: [
-            'La pendenza della linea di bilancio rappresenta il prezzo relativo tra due beni',
-            'Un aumento del reddito sposta la linea di bilancio parallelamente verso destra',
-            'Un aumento del prezzo di un bene modifica la pendenza della linea di bilancio',
-            'Un aumento del reddito modifica la pendenza della linea di bilancio'
+            'La pendenza rappresenta il prezzo relativo tra due beni',
+            'Aumento del reddito → spostamento parallelo a destra',
+            'Aumento del prezzo di un bene → cambia la pendenza',
+            'Aumento del reddito → cambia la pendenza'
         ],
         corretta: 3,
         spiegazione: 'Un aumento del reddito NON modifica la pendenza (che dipende solo dai prezzi).'
     }, {
-        id: 67,
+        id: 62,
         argomento: 'Curve di Indifferenza',
         lezione: 'Lezione 4',
         slide: 'Pag. 13-23',
         domanda: 'Quali affermazioni sulle curve di indifferenza sono corrette?',
         opzioni: [
-            'Le curve di indifferenza hanno pendenza negativa per l\'ipotesi di non sazietà',
-            'Le curve di indifferenza non possono intersecarsi per l\'ipotesi di transitività',
-            'Il saggio marginale di sostituzione (MRS) è la pendenza della curva di indifferenza',
+            'Hanno pendenza negativa per la non sazietà',
+            'Non si intersecano per la transitività',
+            'Il MRS è la pendenza della curva',
             'Due curve di indifferenza possono intersecarsi'
         ],
         corretta: 3,
         spiegazione: 'Le curve di indifferenza NON possono intersecarsi MAI.'
     }, {
-        id: 68,
+        id: 63,
         argomento: 'Scelta del Consumatore',
         lezione: 'Lezione 4',
         slide: 'Pag. 24-29',
-        domanda: 'Quali affermazioni sulla scelta ottima del consumatore sono corrette?',
+        domanda: 'Quali affermazioni sulla scelta ottima sono corrette?',
         opzioni: [
-            'Il paniere ottimo si trova nel punto di tangenza tra la linea di bilancio e la curva di indifferenza più alta raggiungibile',
-            'Nel punto di ottimo, il MRS è uguale al rapporto tra i prezzi dei beni',
-            'Nel punto di ottimo, il consumatore spende tutto il suo reddito',
-            'La scelta del consumatore non è vincolata dal suo reddito'
+            'L\'ottimo è nel punto di tangenza tra vincolo e curva più alta',
+            'Nell\'ottimo, MRS = rapporto dei prezzi',
+            'Nell\'ottimo, il consumatore spende tutto il reddito',
+            'La scelta del consumatore non è vincolata dal reddito'
         ],
         corretta: 3,
         spiegazione: 'La scelta del consumatore È vincolata dal reddito e dai prezzi di mercato.'
     }, {
-        id: 69,
+        id: 64,
         argomento: 'Vincolo di Bilancio',
         lezione: 'Lezione 4',
         slide: 'Pag. 5-8',
@@ -1866,7 +919,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'La pendenza è determinata dai PREZZI, non dal reddito.'
     }, {
-        id: 70,
+        id: 65,
         argomento: 'Curve di Indifferenza',
         lezione: 'Lezione 4',
         slide: 'Pag. 13-23',
@@ -1878,9 +931,9 @@ const DOMANDE = [
             'Il MRS è crescente lungo la curva'
         ],
         corretta: 3,
-        spiegazione: 'Il MRS è DECRESCENTE (si rinuncia a quantità via via minori).'
+        spiegazione: 'Il MRS è DECRESCENTE (si rinuncia a quantità via via minori di un bene per un\'unità aggiuntiva dell\'altro).'
     }, {
-        id: 71,
+        id: 66,
         argomento: 'Scelta del Consumatore',
         lezione: 'Lezione 4',
         slide: 'Pag. 28-29',
@@ -1892,9 +945,9 @@ const DOMANDE = [
             'La soluzione d\'angolo si ha sempre'
         ],
         corretta: 3,
-        spiegazione: 'La soluzione d\'angolo non si ha sempre, ma solo in casi particolari.'
+        spiegazione: 'La soluzione d\'angolo non si ha sempre, ma solo in casi particolari come i sostituti perfetti.'
     }, {
-        id: 72,
+        id: 67,
         argomento: 'Vincolo di Bilancio',
         lezione: 'Lezione 4',
         slide: 'Pag. 11-12',
@@ -1908,7 +961,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'aumento del reddito provoca uno SPOSTAMENTO PARALLELO, non una rotazione.'
     }, {
-        id: 73,
+        id: 68,
         argomento: 'Curve di Indifferenza',
         lezione: 'Lezione 4',
         slide: 'Pag. 24',
@@ -1920,9 +973,9 @@ const DOMANDE = [
             'Le preferenze sono sempre irrazionali'
         ],
         corretta: 3,
-        spiegazione: 'Il modello assume che le preferenze siano razionali.'
+        spiegazione: 'Il modello assume che le preferenze siano razionali (complete, transitive, non sazievoli).'
     }, {
-        id: 74,
+        id: 69,
         argomento: 'Scelta del Consumatore',
         lezione: 'Lezione 4',
         slide: 'Pag. 24-29',
@@ -1934,23 +987,23 @@ const DOMANDE = [
             'Il paniere ottimo è sempre al centro della linea di bilancio'
         ],
         corretta: 3,
-        spiegazione: 'Il paniere ottimo dipende dalle preferenze e può trovarsi in qualsiasi punto.'
+        spiegazione: 'Il paniere ottimo dipende dalle preferenze e può trovarsi in qualsiasi punto della linea di bilancio.'
     }, {
-        id: 75,
+        id: 70,
         argomento: 'Vincolo di Bilancio',
         lezione: 'Lezione 4',
         slide: 'Pag. 5-8',
         domanda: 'Quali affermazioni sul vincolo di bilancio sono corrette?',
         opzioni: [
+            'Il vincolo di bilancio è l\'insieme di tutti i panieri acquistabili',
             'Il vincolo di bilancio dipende dal reddito del consumatore',
             'Il vincolo di bilancio dipende dai prezzi dei beni',
-            'Il vincolo di bilancio è l\'insieme dei panieri acquistabili',
             'Il vincolo di bilancio non dipende dal reddito del consumatore'
         ],
         corretta: 3,
         spiegazione: 'Il vincolo di bilancio DIPENDE dal reddito del consumatore.'
     }, {
-        id: 76,
+        id: 71,
         argomento: 'Curve di Indifferenza',
         lezione: 'Lezione 4',
         slide: 'Pag. 13-23',
@@ -1962,23 +1015,23 @@ const DOMANDE = [
             'Le curve di indifferenza mostrano combinazioni di beni che danno la stessa utilità'
         ],
         corretta: 2,
-        spiegazione: 'Le curve di indifferenza NON possono intersecarsi.'
+        spiegazione: 'Le curve di indifferenza NON possono intersecarsi (violerebbe la transitività).'
     }, {
-        id: 77,
+        id: 72,
         argomento: 'Scelta del Consumatore',
         lezione: 'Lezione 4',
         slide: 'Pag. 24-29',
         domanda: 'Quali affermazioni sulla scelta ottima sono corrette?',
         opzioni: [
             'Il consumatore massimizza l\'utilità vincolato dal reddito',
-            'Il punto di ottimo è tangenza tra vincolo e curva di indifferenza',
+            'Il punto di ottimo è tangenza tra vincolo di bilancio e curva di indifferenza',
             'Nell\'ottimo, MRS = rapporto tra i prezzi',
             'Nell\'ottimo, il consumatore spende meno del reddito disponibile'
         ],
         corretta: 3,
-        spiegazione: 'Nell\'ottimo, il consumatore spende TUTTO il reddito disponibile.'
+        spiegazione: 'Nell\'ottimo, il consumatore spende TUTTO il reddito disponibile (non ha senso risparmiare).'
     }, {
-        id: 78,
+        id: 73,
         argomento: 'Vincolo di Bilancio',
         lezione: 'Lezione 4',
         slide: 'Pag. 11-12',
@@ -1986,13 +1039,13 @@ const DOMANDE = [
         opzioni: [
             'Un aumento del reddito sposta la linea di bilancio parallelamente a destra',
             'Una diminuzione del reddito sposta la linea di bilancio parallelamente a sinistra',
-            'La pendenza rimane invariata con variazioni di reddito',
+            'La pendenza della linea di bilancio rimane invariata con variazioni di reddito',
             'Un aumento del reddito cambia la pendenza della linea di bilancio'
         ],
         corretta: 3,
-        spiegazione: 'Un aumento del reddito NON cambia la pendenza.'
+        spiegazione: 'Un aumento del reddito NON cambia la pendenza (che dipende solo dai prezzi).'
     }, {
-        id: 79,
+        id: 74,
         argomento: 'Curve di Indifferenza',
         lezione: 'Lezione 4',
         slide: 'Pag. 13-23',
@@ -2004,9 +1057,9 @@ const DOMANDE = [
             'Il MRS è crescente per l\'ipotesi di utilità marginale decrescente'
         ],
         corretta: 3,
-        spiegazione: 'Il MRS è DECRESCENTE (non crescente).'
+        spiegazione: 'Il MRS è DECRESCENTE (non crescente) per l\'ipotesi di utilità marginale decrescente.'
     }, {
-        id: 80,
+        id: 75,
         argomento: 'Scelta del Consumatore',
         lezione: 'Lezione 4',
         slide: 'Pag. 36-40',
@@ -2018,14 +1071,14 @@ const DOMANDE = [
             'Per un bene di Giffen, l\'effetto di reddito è positivo'
         ],
         corretta: 3,
-        spiegazione: 'Per un bene di Giffen, l\'effetto di reddito è NEGATIVO e prevale sul sostituzione.'
+        spiegazione: 'Per un bene di Giffen (caso estremo di bene inferiore), l\'effetto di reddito è NEGATIVO e prevale sull\'effetto di sostituzione.'
     },
 
     // ============================================================
-    // LEZIONE 5 - TEORIA DELL'OFFERTA (ID 81-95)
+    // LEZIONE 5 - TEORIA DELL'OFFERTA (ID 76-90)
     // ============================================================
     {
-        id: 81,
+        id: 76,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 4-7',
@@ -2039,7 +1092,7 @@ const DOMANDE = [
         corretta: 1,
         spiegazione: 'Il costo marginale è la VARIAZIONE del costo totale (ΔCT/ΔQ), non CT/Q.'
     }, {
-        id: 82,
+        id: 77,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 22-31',
@@ -2053,7 +1106,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'impresa deve confrontare MR e MC per ogni unità.'
     }, {
-        id: 83,
+        id: 78,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 22-24',
@@ -2065,9 +1118,9 @@ const DOMANDE = [
             'Il costo marginale è sempre costante'
         ],
         corretta: 3,
-        spiegazione: 'Il costo marginale ha andamento a U: prima diminuisce, poi aumenta.'
+        spiegazione: 'Il costo marginale ha andamento a U: prima diminuisce, poi aumenta (rendimenti decrescenti).'
     }, {
-        id: 84,
+        id: 79,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 4-7',
@@ -2079,9 +1132,9 @@ const DOMANDE = [
             'Il costo totale è la somma di costi fissi e variabili'
         ],
         corretta: 2,
-        spiegazione: 'I costi fissi non sono necessariamente maggiori dei costi variabili.'
+        spiegazione: 'I costi fissi non sono necessariamente maggiori dei costi variabili; dipende dal settore.'
     }, {
-        id: 85,
+        id: 80,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 8-9',
@@ -2093,9 +1146,9 @@ const DOMANDE = [
             'Lo Stato Patrimoniale mostra solo i profitti'
         ],
         corretta: 3,
-        spiegazione: 'Lo Stato Patrimoniale mostra attività, passività e capitale netto.'
+        spiegazione: 'Lo Stato Patrimoniale mostra attività, passività e capitale netto, non solo i profitti.'
     }, {
-        id: 86,
+        id: 81,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 22-31',
@@ -2107,9 +1160,9 @@ const DOMANDE = [
             'Si produce finché il profitto medio è positivo'
         ],
         corretta: 3,
-        spiegazione: 'L\'approccio marginale si basa sul confronto tra MR e MC.'
+        spiegazione: 'L\'approccio marginale si basa sul confronto tra MR e MC, non sul profitto medio.'
     }, {
-        id: 87,
+        id: 82,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 30-32',
@@ -2123,7 +1176,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il ricavo marginale non è sempre crescente; in monopolio è decrescente.'
     }, {
-        id: 88,
+        id: 83,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 13-16',
@@ -2137,7 +1190,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'La curva di costo totale è SEMPRE crescente all\'aumentare della produzione.'
     }, {
-        id: 89,
+        id: 84,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 20-21',
@@ -2151,7 +1204,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il profitto totale può essere negativo (perdita) se RT < CT.'
     }, {
-        id: 90,
+        id: 85,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 35-36',
@@ -2163,23 +1216,23 @@ const DOMANDE = [
             'I manager perseguono sempre la massimizzazione del profitto'
         ],
         corretta: 3,
-        spiegazione: 'I manager possono avere obiettivi diversi dalla massimizzazione del profitto.'
+        spiegazione: 'I manager possono avere obiettivi diversi (dimensione, crescita) dalla massimizzazione del profitto.'
     }, {
-        id: 91,
+        id: 86,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 22-31',
         domanda: 'Quali affermazioni sulla massimizzazione del profitto sono corrette?',
         opzioni: [
-            'Il costo marginale è la variazione del costo totale per un\'unità aggiuntiva',
-            'Il ricavo marginale è la variazione del ricavo totale per un\'unità aggiuntiva',
-            'La quantità ottima è quella in cui MR = MC',
+            'Il costo marginale è la variazione del costo totale conseguente alla produzione di un\'unità addizionale',
+            'Il ricavo marginale è la variazione del ricavo totale conseguente alla vendita di un\'unità addizionale',
+            'La quantità ottima di produzione è quella in cui il ricavo marginale eguaglia il costo marginale',
             'Il profitto è massimo quando il ricavo totale è massimo'
         ],
         corretta: 3,
-        spiegazione: 'Il profitto è massimo quando MR = MC, non quando RT è massimo.'
+        spiegazione: 'Il profitto è massimo quando MR = MC, non quando RT è massimo. RT massimo si ha quando MR = 0.'
     }, {
-        id: 92,
+        id: 87,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 4-7',
@@ -2193,7 +1246,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il ricavo medio è SEMPRE uguale al prezzo (AR = P).'
     }, {
-        id: 93,
+        id: 88,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 4-7',
@@ -2207,7 +1260,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'I costi fissi NON variano con la quantità prodotta (per definizione).'
     }, {
-        id: 94,
+        id: 89,
         argomento: 'Massimizzazione del Profitto',
         lezione: 'Lezione 5',
         slide: 'Pag. 26-29',
@@ -2221,7 +1274,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il profitto è massimo quando MR = MC, non quando AR = AC (che è il punto di pareggio).'
     }, {
-        id: 95,
+        id: 90,
         argomento: 'Teoria dell\'Offerta',
         lezione: 'Lezione 5',
         slide: 'Pag. 13-16',
@@ -2233,14 +1286,14 @@ const DOMANDE = [
             'La curva di costo totale è sempre lineare'
         ],
         corretta: 3,
-        spiegazione: 'La curva di costo totale NON è sempre lineare; ha forma a S.'
+        spiegazione: 'La curva di costo totale NON è sempre lineare; ha forma a S (prima concava, poi convessa).'
     },
 
     // ============================================================
-    // LEZIONE 6 - BREVE E LUNGO PERIODO (ID 96-115)
+    // LEZIONE 6 - BREVE E LUNGO PERIODO (ID 91-110)
     // ============================================================
     {
-        id: 96,
+        id: 91,
         argomento: 'Breve e Lungo Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 13-14',
@@ -2254,7 +1307,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Nel lungo periodo TUTTI i costi sono variabili.'
     }, {
-        id: 97,
+        id: 92,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 35-44',
@@ -2268,7 +1321,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'SAFC DIMINUISCE all\'aumentare di Q perché si spalma su più unità.'
     }, {
-        id: 98,
+        id: 93,
         argomento: 'Decisione di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 45-47',
@@ -2282,7 +1335,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Nel breve, l\'impresa NON deve coprire tutti i costi fissi. Basta coprire SAVC.'
     }, {
-        id: 99,
+        id: 94,
         argomento: 'Breve e Lungo Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 13-14',
@@ -2294,9 +1347,9 @@ const DOMANDE = [
             'Nel lungo, i costi fissi esistono'
         ],
         corretta: 3,
-        spiegazione: 'Nel lungo periodo NON esistono costi fissi.'
+        spiegazione: 'Nel lungo periodo NON esistono costi fissi. Tutti i costi sono variabili.'
     }, {
-        id: 100,
+        id: 95,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 35-44',
@@ -2310,7 +1363,7 @@ const DOMANDE = [
         corretta: 2,
         spiegazione: 'SAVC è sempre MINORE di SATC perché SATC = SAVC + SAFC.'
     }, {
-        id: 101,
+        id: 96,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 35-44',
@@ -2322,9 +1375,9 @@ const DOMANDE = [
             'SAFC aumenta all\'aumentare di Q'
         ],
         corretta: 3,
-        spiegazione: 'SAFC DIMINUISCE all\'aumentare di Q.'
+        spiegazione: 'SAFC DIMINUISCE all\'aumentare di Q perché SFC è costante e Q aumenta.'
     }, {
-        id: 102,
+        id: 97,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
@@ -2336,9 +1389,9 @@ const DOMANDE = [
             'La legge dei rendimenti decrescenti vale nel lungo periodo'
         ],
         corretta: 3,
-        spiegazione: 'La legge dei rendimenti decrescenti vale nel BREVE periodo.'
+        spiegazione: 'La legge dei rendimenti decrescenti vale nel BREVE periodo, quando almeno un fattore è fisso.'
     }, {
-        id: 103,
+        id: 98,
         argomento: 'Decisione di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 45-47',
@@ -2352,7 +1405,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il prezzo di chiusura è il SAVC minimo, non il SATC minimo.'
     }, {
-        id: 104,
+        id: 99,
         argomento: 'Breve e Lungo Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 15-21',
@@ -2364,9 +1417,9 @@ const DOMANDE = [
             'LAC è sempre crescente'
         ],
         corretta: 3,
-        spiegazione: 'LAC ha forma a U (economie e diseconomie di scala).'
+        spiegazione: 'LAC ha forma a U (economie e diseconomie di scala), non è sempre crescente.'
     }, {
-        id: 105,
+        id: 100,
         argomento: 'Economie di Scala',
         lezione: 'Lezione 6',
         slide: 'Pag. 22-30',
@@ -2378,9 +1431,9 @@ const DOMANDE = [
             'Le economie di scala sono sempre presenti'
         ],
         corretta: 3,
-        spiegazione: 'Le economie di scala non sono sempre presenti.'
+        spiegazione: 'Le economie di scala non sono sempre presenti; oltre una certa dimensione compaiono diseconomie di scala.'
     }, {
-        id: 106,
+        id: 101,
         argomento: 'Breve e Lungo Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 13-14',
@@ -2388,27 +1441,27 @@ const DOMANDE = [
         opzioni: [
             'Nel lungo periodo, tutti i fattori produttivi sono variabili',
             'Nel breve periodo, almeno un fattore produttivo è fisso',
-            'Il costo medio di lungo periodo (LAC) ha forma a U',
+            'Il costo medio di lungo periodo (LAC) ha forma a U per la presenza di economie e diseconomie di scala',
             'Nel lungo periodo, l\'impresa sostiene costi fissi anche quando la produzione è nulla'
         ],
         corretta: 3,
-        spiegazione: 'Nel lungo periodo TUTTI i costi sono variabili.'
+        spiegazione: 'Nel lungo periodo TUTTI i costi sono variabili. Se la produzione è zero, l\'impresa può uscire e non sostenere costi.'
     }, {
-        id: 107,
+        id: 102,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 35-44',
         domanda: 'Quali affermazioni sui costi di breve periodo sono corrette?',
         opzioni: [
             'Il costo medio fisso (SAFC) diminuisce all\'aumentare della quantità prodotta',
-            'Il costo medio variabile (SAVC) ha forma a U',
+            'Il costo medio variabile (SAVC) ha forma a U per la legge dei rendimenti decrescenti',
             'Il costo marginale di breve periodo (SMC) interseca il costo medio totale nel suo punto di minimo',
             'Nel breve periodo, il costo medio fisso aumenta all\'aumentare della quantità prodotta'
         ],
         corretta: 3,
-        spiegazione: 'SAFC DIMINUISCE all\'aumentare di Q.'
+        spiegazione: 'Il costo medio fisso (SAFC) DIMINUISCE all\'aumentare di Q perché si spalma su più unità prodotte.'
     }, {
-        id: 108,
+        id: 103,
         argomento: 'Decisione di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 45-47',
@@ -2416,27 +1469,27 @@ const DOMANDE = [
         opzioni: [
             'Nel breve periodo, un\'impresa che produce in perdita deve sempre uscire dal mercato',
             'Nel breve periodo, l\'impresa sostiene costi fissi anche se la produzione è zero',
-            'La curva di offerta di breve periodo è il tratto crescente della curva SMC sopra il punto di chiusura',
-            'Se il prezzo è inferiore al costo medio variabile minimo, l\'impresa sospende'
+            'La curva di offerta di breve periodo è il tratto crescente della curva SMC al di sopra del punto di chiusura',
+            'Se il prezzo è inferiore al costo medio variabile minimo, l\'impresa sospende la produzione'
         ],
         corretta: 0,
-        spiegazione: 'Nel breve periodo, un\'impresa può produrre in perdita se copre almeno i costi variabili.'
+        spiegazione: 'Nel breve periodo, un\'impresa può produrre in perdita se copre almeno i costi variabili (P ≥ SAVC). Non deve sempre uscire.'
     }, {
-        id: 109,
+        id: 104,
         argomento: 'Economie di Scala',
         lezione: 'Lezione 6',
         slide: 'Pag. 22-30',
         domanda: 'Quali affermazioni sulle economie di scala sono corrette?',
         opzioni: [
-            'Il costo medio di lungo periodo (LAC) si calcola dividendo LTC per Q',
-            'Le economie di scala si hanno quando LAC diminuisce al crescere di Q',
-            'Le diseconomie di scala si hanno quando LAC aumenta al crescere di Q',
-            'La curva LAC è sempre decrescente'
+            'Il costo medio di lungo periodo (LAC) si calcola dividendo il costo totale di lungo periodo (LTC) per la quantità prodotta',
+            'Le economie di scala si hanno quando il costo medio di lungo periodo diminuisce al crescere della produzione',
+            'Le diseconomie di scala si hanno quando il costo medio di lungo periodo aumenta al crescere della produzione',
+            'La curva del costo medio di lungo periodo è sempre decrescente'
         ],
         corretta: 3,
-        spiegazione: 'La curva LAC ha forma a U: prima decresce, poi cresce.'
+        spiegazione: 'La curva LAC ha forma a U: prima decresce (economie di scala), poi cresce (diseconomie di scala).'
     }, {
-        id: 110,
+        id: 105,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 35-44',
@@ -2448,9 +1501,9 @@ const DOMANDE = [
             'I costi variabili sono indipendenti dal livello di produzione'
         ],
         corretta: 3,
-        spiegazione: 'I costi variabili DIPENDONO dal livello di produzione.'
+        spiegazione: 'I costi variabili DIPENDONO dal livello di produzione (variano al variare di Q).'
     }, {
-        id: 111,
+        id: 106,
         argomento: 'Breve e Lungo Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 13-14',
@@ -2462,9 +1515,9 @@ const DOMANDE = [
             'Nel breve periodo, l\'impresa può variare solo alcuni input'
         ],
         corretta: 2,
-        spiegazione: 'Nel breve periodo, ALMENO UN input è fisso.'
+        spiegazione: 'Nel breve periodo, ALMENO UN input è fisso (non tutti sono variabili).'
     }, {
-        id: 112,
+        id: 107,
         argomento: 'Economie di Scala',
         lezione: 'Lezione 6',
         slide: 'Pag. 22-30',
@@ -2476,9 +1529,9 @@ const DOMANDE = [
             'Le economie di scala sono causate solo da fattori esterni all\'impresa'
         ],
         corretta: 3,
-        spiegazione: 'Le economie di scala sono causate da fattori INTERNI all\'impresa.'
+        spiegazione: 'Le economie di scala sono causate da fattori INTERNI all\'impresa (indivisibilità, specializzazione, etc.).'
     }, {
-        id: 113,
+        id: 108,
         argomento: 'Costi di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 35-44',
@@ -2490,9 +1543,9 @@ const DOMANDE = [
             'SATC è sempre maggiore di SAVC'
         ],
         corretta: 3,
-        spiegazione: 'SATC = SAFC + SAVC, quindi è sempre MAGGIORE di SAVC.'
+        spiegazione: 'SATC = SAFC + SAVC, quindi è sempre MAGGIORE di SAVC (perché SAFC > 0).'
     }, {
-        id: 114,
+        id: 109,
         argomento: 'Decisione di Breve Periodo',
         lezione: 'Lezione 6',
         slide: 'Pag. 45-47',
@@ -2504,28 +1557,28 @@ const DOMANDE = [
             'Sospendendo, l\'impresa recupera tutti i costi'
         ],
         corretta: 3,
-        spiegazione: 'Sospendendo, l\'impresa NON recupera i costi fissi (sono già sostenuti).'
+        spiegazione: 'Sospendendo, l\'impresa NON recupera i costi fissi (che sono già sostenuti). Perde comunque i costi fissi.'
     }, {
-        id: 115,
+        id: 110,
         argomento: 'Economie di Scala',
         lezione: 'Lezione 6',
         slide: 'Pag. 22-30',
         domanda: 'Quali affermazioni sui rendimenti di scala sono corrette?',
         opzioni: [
-            'Rendimenti crescenti: LAC diminuisce',
-            'Rendimenti costanti: LAC non cambia',
-            'Rendimenti decrescenti: LAC aumenta',
+            'Rendimenti crescenti di scala: LAC diminuisce',
+            'Rendimenti costanti di scala: LAC non cambia',
+            'Rendimenti decrescenti di scala: LAC aumenta',
             'I rendimenti di scala sono sempre crescenti'
         ],
         corretta: 3,
-        spiegazione: 'I rendimenti di scala possono essere crescenti, costanti o decrescenti.'
+        spiegazione: 'I rendimenti di scala possono essere crescenti, costanti o decrescenti. Non sono sempre crescenti.'
     },
 
     // ============================================================
-    // LEZIONE 7 - STRUTTURE DI MERCATO (ID 116-135)
+    // LEZIONE 7 - STRUTTURE DI MERCATO (ID 111-135)
     // ============================================================
     {
-        id: 116,
+        id: 111,
         argomento: 'Concorrenza Perfetta',
         lezione: 'Lezione 7',
         slide: 'Pag. 7-11',
@@ -2539,7 +1592,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'In concorrenza perfetta, MR = P. MR < P è tipico del monopolio.'
     }, {
-        id: 117,
+        id: 112,
         argomento: 'Monopolio',
         lezione: 'Lezione 7',
         slide: 'Pag. 22-28',
@@ -2553,7 +1606,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Nel monopolio MR < P. Se MR = P, sarebbe concorrenza perfetta.'
     }, {
-        id: 118,
+        id: 113,
         argomento: 'Concorrenza Monopolistica',
         lezione: 'Lezione 7',
         slide: 'Pag. 30-39',
@@ -2567,7 +1620,7 @@ const DOMANDE = [
         corretta: 2,
         spiegazione: 'Nel lungo periodo, l\'assenza di barriere all\'entrata fa sì che i profitti siano NULLI.'
     }, {
-        id: 119,
+        id: 114,
         argomento: 'Concorrenza Perfetta',
         lezione: 'Lezione 7',
         slide: 'Pag. 12-16',
@@ -2581,7 +1634,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'La curva di offerta di breve è crescente, non decrescente.'
     }, {
-        id: 120,
+        id: 115,
         argomento: 'Monopolio',
         lezione: 'Lezione 7',
         slide: 'Pag. 23-25',
@@ -2593,9 +1646,9 @@ const DOMANDE = [
             'Le licenze governative non possono creare un monopolio'
         ],
         corretta: 3,
-        spiegazione: 'Le licenze governative POSSONO creare un monopolio.'
+        spiegazione: 'Le licenze governative POSSONO creare un monopolio (es. concessioni statali).'
     }, {
-        id: 121,
+        id: 116,
         argomento: 'Monopolio',
         lezione: 'Lezione 7',
         slide: 'Pag. 26-28',
@@ -2609,7 +1662,7 @@ const DOMANDE = [
         corretta: 2,
         spiegazione: 'MR può diventare NEGATIVO quando la perdita di ricavo sulle unità inframarginali supera il ricavo dell\'unità aggiuntiva.'
     }, {
-        id: 122,
+        id: 117,
         argomento: 'Concorrenza Monopolistica',
         lezione: 'Lezione 7',
         slide: 'Pag. 30-39',
@@ -2623,7 +1676,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Nel lungo periodo, l\'entrata di nuove imprese azzera gli extra-profitti.'
     }, {
-        id: 123,
+        id: 118,
         argomento: 'Concorrenza Perfetta',
         lezione: 'Lezione 7',
         slide: 'Pag. 12-16',
@@ -2635,9 +1688,9 @@ const DOMANDE = [
             'Nel lungo, l\'entrata di nuove imprese è possibile'
         ],
         corretta: 2,
-        spiegazione: 'Nel breve periodo, l\'entrata di nuove imprese NON è possibile.'
+        spiegazione: 'Nel breve periodo, l\'entrata di nuove imprese NON è possibile perché ci sono barriere temporanee.'
     }, {
-        id: 124,
+        id: 119,
         argomento: 'Monopolio',
         lezione: 'Lezione 7',
         slide: 'Pag. 28',
@@ -2651,7 +1704,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il monopolista può avere extra-profitti anche nel lungo periodo grazie alle barriere all\'entrata.'
     }, {
-        id: 125,
+        id: 120,
         argomento: 'Concorrenza Perfetta',
         lezione: 'Lezione 7',
         slide: 'Pag. 7-11',
@@ -2663,9 +1716,9 @@ const DOMANDE = [
             'Barriere all\'entrata significative'
         ],
         corretta: 3,
-        spiegazione: 'La concorrenza perfetta presuppone COMPLETA libertà di entrata e uscita.'
+        spiegazione: 'La concorrenza perfetta presuppone COMPLETA libertà di entrata e uscita, non barriere.'
     }, {
-        id: 126,
+        id: 121,
         argomento: 'Strutture di Mercato',
         lezione: 'Lezione 7',
         slide: 'Pag. 7-28',
@@ -2679,21 +1732,21 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Nel monopolio MR < P. Se MR = P, sarebbe concorrenza perfetta.'
     }, {
-        id: 127,
+        id: 122,
         argomento: 'Concorrenza Monopolistica',
         lezione: 'Lezione 7',
         slide: 'Pag. 30-39',
         domanda: 'Quali affermazioni sulla concorrenza monopolistica sono corrette?',
         opzioni: [
-            'Il prodotto è differenziato',
-            'Nel breve, l\'impresa può avere extra-profitti',
-            'Nel lungo, le imprese hanno profitti positivi',
-            'Nel lungo, l\'entrata di nuove imprese azzera i profitti'
+            'Nel modello di concorrenza monopolistica, il prodotto è differenziato',
+            'Nel breve periodo, l\'impresa in concorrenza monopolistica può ottenere extra-profitti',
+            'Nel lungo periodo, le imprese in concorrenza monopolistica ottengono extra-profitti grazie alla differenziazione del prodotto',
+            'Nel lungo periodo, l\'entrata di nuove imprese azzera i profitti in concorrenza monopolistica'
         ],
         corretta: 2,
-        spiegazione: 'Nel lungo periodo i profitti sono NULLI.'
+        spiegazione: 'Nel lungo periodo, l\'assenza di barriere all\'entrata fa sì che i profitti siano NULLI (pareggio).'
     }, {
-        id: 128,
+        id: 123,
         argomento: 'Monopolio',
         lezione: 'Lezione 7',
         slide: 'Pag. 26-28',
@@ -2705,9 +1758,9 @@ const DOMANDE = [
             'Per vendere un\'unità in più, il monopolista deve ridurre il prezzo'
         ],
         corretta: 2,
-        spiegazione: 'Il ricavo marginale in monopolio può diventare NEGATIVO.'
+        spiegazione: 'Il ricavo marginale in monopolio può diventare NEGATIVO quando la perdita di ricavo sulle unità inframarginali supera il ricavo dell\'unità aggiuntiva.'
     }, {
-        id: 129,
+        id: 124,
         argomento: 'Concorrenza Perfetta',
         lezione: 'Lezione 7',
         slide: 'Pag. 12-16',
@@ -2719,9 +1772,9 @@ const DOMANDE = [
             'Nel breve periodo, le imprese possono avere perdite'
         ],
         corretta: 2,
-        spiegazione: 'Nel lungo periodo, l\'entrata di nuove imprese azzera gli extra-profitti.'
+        spiegazione: 'Nel lungo periodo, l\'entrata di nuove imprese azzera gli extra-profitti, portando a profitti normali (pareggio).'
     }, {
-        id: 130,
+        id: 125,
         argomento: 'Monopolio',
         lezione: 'Lezione 7',
         slide: 'Pag. 22-28',
@@ -2733,9 +1786,13 @@ const DOMANDE = [
             'Il monopolista deve sempre fissare il prezzo al costo marginale'
         ],
         corretta: 3,
-        spiegazione: 'Il monopolista non deve fissare il prezzo al costo marginale; massimizza dove MR = MC.'
-    }, {
-        id: 131,
+        spiegazione: 'Il monopolista non deve fissare il prezzo al costo marginale; massimizza il profitto dove MR = MC, poi determina il prezzo sulla curva di domanda.'
+    },
+    // ============================================================
+    // LEZIONE 8 - OLIGOPOLIO E TEORIA DEI GIOCHI (ID 126-140)
+    // ============================================================
+    {
+        id: 126,
         argomento: 'Oligopolio',
         lezione: 'Lezione 8',
         slide: 'Pag. 2-12',
@@ -2749,7 +1806,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Le imprese in oligopolio DEVONO preoccuparsi delle reazioni dei concorrenti.'
     }, {
-        id: 132,
+        id: 127,
         argomento: 'Teoria dei Giochi',
         lezione: 'Lezione 8',
         slide: 'Pag. 13-24',
@@ -2763,7 +1820,7 @@ const DOMANDE = [
         corretta: 2,
         spiegazione: 'Nel dilemma del prigioniero, la strategia dominante è NON COOPERARE.'
     }, {
-        id: 133,
+        id: 128,
         argomento: 'Teoria dei Giochi',
         lezione: 'Lezione 8',
         slide: 'Pag. 25-30',
@@ -2777,7 +1834,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Cournot = quantità, Bertrand = prezzo.'
     }, {
-        id: 134,
+        id: 129,
         argomento: 'Oligopolio',
         lezione: 'Lezione 8',
         slide: 'Pag. 7-12',
@@ -2789,9 +1846,9 @@ const DOMANDE = [
             'La curva di domanda ad angolo ha sempre elasticità unitaria'
         ],
         corretta: 3,
-        spiegazione: 'La curva di domanda ad angolo non ha elasticità unitaria.'
+        spiegazione: 'La curva di domanda ad angolo non ha elasticità unitaria; l\'elasticità varia nei due tratti.'
     }, {
-        id: 135,
+        id: 130,
         argomento: 'Teoria dei Giochi',
         lezione: 'Lezione 8',
         slide: 'Pag. 13-24',
@@ -2803,14 +1860,154 @@ const DOMANDE = [
             'L\'equilibrio di Nash è un concetto fondamentale della teoria dei giochi'
         ],
         corretta: 2,
-        spiegazione: 'L\'equilibrio di Nash può essere multiplo.'
+        spiegazione: 'L\'equilibrio di Nash può essere multiplo (es. giochi con più equilibri).'
+    }, {
+        id: 131,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 7-8',
+        domanda: 'Quali affermazioni sulla collusione sono corrette?',
+        opzioni: [
+            'La collusione è un accordo tra imprese per determinare quantità e prezzo',
+            'Un cartello è un gruppo di imprese che colludono',
+            'La collusione è sempre stabile nel tempo',
+            'Le imprese hanno incentivo a tradire la collusione'
+        ],
+        corretta: 2,
+        spiegazione: 'La collusione NON è sempre stabile; le imprese hanno incentivo a tradire per ottenere profitti maggiori.'
+    }, {
+        id: 132,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 5-6',
+        domanda: 'Quali affermazioni sull\'interdipendenza in oligopolio sono corrette?',
+        opzioni: [
+            'L\'interdipendenza è la caratteristica fondamentale dell\'oligopolio',
+            'Le azioni di un\'impresa influenzano le altre',
+            'Le imprese devono considerare le reazioni dei concorrenti',
+            'Nell\'oligopolio non c\'è interdipendenza'
+        ],
+        corretta: 3,
+        spiegazione: 'L\'interdipendenza È la caratteristica fondamentale dell\'oligopolio.'
+    }, {
+        id: 133,
+        argomento: 'Teoria dei Giochi',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 15-17',
+        domanda: 'Quali affermazioni sulla strategia dominante sono corrette?',
+        opzioni: [
+            'Una strategia dominante è la migliore indipendentemente dalle scelte degli altri',
+            'Non tutti i giochi hanno una strategia dominante',
+            'La strategia dominante porta sempre all\'equilibrio di Nash',
+            'La strategia dominante è sempre la strategia cooperativa'
+        ],
+        corretta: 3,
+        spiegazione: 'La strategia dominante spesso è NON cooperativa (es. dilemma del prigioniero).'
+    }, {
+        id: 134,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 9-11',
+        domanda: 'Quali affermazioni sulla vischiosità dei prezzi sono corrette?',
+        opzioni: [
+            'I prezzi in oligopolio tendono a essere stabili',
+            'La curva di domanda ad angolo spiega la vischiosità dei prezzi',
+            'Le imprese hanno paura di modificare i prezzi per le reazioni dei concorrenti',
+            'I prezzi in oligopolio cambiano continuamente'
+        ],
+        corretta: 3,
+        spiegazione: 'I prezzi in oligopolio tendono a essere STABILI (vischiosi), non cambiano continuamente.'
+    }, {
+        id: 135,
+        argomento: 'Teoria dei Giochi',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 17-24',
+        domanda: 'Quali affermazioni sul dilemma del prigioniero sono corrette?',
+        opzioni: [
+            'Nel dilemma del prigioniero, la cooperazione porta al risultato migliore per entrambi',
+            'La cooperazione non è un equilibrio di Nash',
+            'Il dilemma del prigioniero spiega perché la collusione è instabile',
+            'Nel dilemma del prigioniero, la strategia dominante è cooperare'
+        ],
+        corretta: 3,
+        spiegazione: 'La strategia dominante è NON COOPERARE, non cooperare.'
+    }, {
+        id: 136,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 2-12',
+        domanda: 'Quali affermazioni sull\'oligopolio sono corrette?',
+        opzioni: [
+            'L\'oligopolio è caratterizzato da interdipendenza strategica tra le imprese',
+            'Le imprese in oligopolio devono tenere conto delle reazioni dei concorrenti',
+            'Nel dilemma del prigioniero, la strategia dominante è spesso quella di non cooperare',
+            'Nel dilemma del prigioniero, l\'equilibrio di Nash coincide sempre con l\'ottimo paretiano'
+        ],
+        corretta: 3,
+        spiegazione: 'Nel dilemma del prigioniero, l\'equilibrio di Nash (non cooperare/non cooperare) NON coincide con l\'ottimo paretiano (cooperare/cooperare).'
+    }, {
+        id: 137,
+        argomento: 'Teoria dei Giochi',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 13-24',
+        domanda: 'Quali affermazioni sulla teoria dei giochi sono corrette?',
+        opzioni: [
+            'La teoria dei giochi studia il comportamento razionale in situazioni di interdipendenza',
+            'Un gioco è in equilibrio quando nessun giocatore ha incentivo a cambiare strategia',
+            'L\'equilibrio di Nash è un concetto fondamentale della teoria dei giochi',
+            'La teoria dei giochi si applica solo all\'economia'
+        ],
+        corretta: 3,
+        spiegazione: 'La teoria dei giochi si applica a molti campi: economia, politica, strategie militari, biologia, ecc.'
+    }, {
+        id: 138,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 7-12',
+        domanda: 'Quali affermazioni sulla curva di domanda ad angolo sono corrette?',
+        opzioni: [
+            'La curva di domanda ad angolo ha una discontinuità nel ricavo marginale',
+            'La curva di domanda ad angolo spiega la rigidità dei prezzi',
+            'Se i costi marginali variano all\'interno della discontinuità, il prezzo non cambia',
+            'La curva di domanda ad angolo ha sempre pendenza costante'
+        ],
+        corretta: 3,
+        spiegazione: 'La curva di domanda ad angolo ha pendenza DIVERSA nei due tratti (elastica per prezzi alti, rigida per prezzi bassi).'
+    }, {
+        id: 139,
+        argomento: 'Teoria dei Giochi',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 15-17',
+        domanda: 'Quali affermazioni sulla strategia dominante sono corrette?',
+        opzioni: [
+            'Una strategia dominante è sempre la migliore, indipendentemente dalle scelte altrui',
+            'Se una strategia è dominante, sarà scelta da un giocatore razionale',
+            'La strategia dominante può portare a un risultato subottimale per tutti',
+            'La strategia dominante è sempre la strategia cooperativa'
+        ],
+        corretta: 3,
+        spiegazione: 'La strategia dominante spesso è NON cooperativa (es. dilemma del prigioniero).'
+    }, {
+        id: 140,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 5-6',
+        domanda: 'Quali affermazioni sulla collusione sono corrette?',
+        opzioni: [
+            'La collusione è un accordo tra imprese per limitare la concorrenza',
+            'I cartelli sono esempi di collusione',
+            'La collusione è spesso instabile perché le imprese hanno incentivo a tradire',
+            'La collusione è sempre legale'
+        ],
+        corretta: 3,
+        spiegazione: 'La collusione è spesso ILLEGALE (viola le leggi antitrust).'
     },
 
     // ============================================================
-    // LEZIONE 9 - VALUTAZIONE INVESTIMENTI (ID 136-155)
+    // LEZIONE 9 - VALUTAZIONE INVESTIMENTI (ID 141-175)
     // ============================================================
     {
-        id: 136,
+        id: 141,
         argomento: 'Capitalizzazione',
         lezione: 'Lezione 9',
         slide: 'Pag. 4-9',
@@ -2824,7 +2021,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Nell\'interesse composto, gli interessi VENGONO capitalizzati.'
     }, {
-        id: 137,
+        id: 142,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 25-34',
@@ -2838,7 +2035,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il Payback (non attualizzato) NON considera il valore temporale del denaro.'
     }, {
-        id: 138,
+        id: 143,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 23-24',
@@ -2852,7 +2049,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'I sunk cost sono costi già sostenuti e irrecuperabili. NON vanno considerati.'
     }, {
-        id: 139,
+        id: 144,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 30-32',
@@ -2866,7 +2063,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il MARR è il tasso minimo di rendimento richiesto. Il TIR è il tasso INTERNO del progetto.'
     }, {
-        id: 140,
+        id: 145,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 33-34',
@@ -2878,9 +2075,9 @@ const DOMANDE = [
             'Considera il valore temporale del denaro'
         ],
         corretta: 3,
-        spiegazione: 'Il Payback NON considera il valore temporale del denaro.'
+        spiegazione: 'Il Payback NON considera il valore temporale del denaro. Lo fa il Payback attualizzato.'
     }, {
-        id: 141,
+        id: 146,
         argomento: 'Capitalizzazione',
         lezione: 'Lezione 9',
         slide: 'Pag. 7-9',
@@ -2892,9 +2089,9 @@ const DOMANDE = [
             '(A/F, i, n) = (1+i)^n - 1'
         ],
         corretta: 3,
-        spiegazione: '(A/F, i, n) = i/[(1+i)^n - 1].'
+        spiegazione: '(A/F, i, n) = i/[(1+i)^n - 1], non (1+i)^n - 1.'
     }, {
-        id: 142,
+        id: 147,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 27-29',
@@ -2906,9 +2103,9 @@ const DOMANDE = [
             'VAN non considera il valore temporale del denaro'
         ],
         corretta: 3,
-        spiegazione: 'Il VAN CONSIDERA il valore temporale del denaro.'
+        spiegazione: 'Il VAN CONSIDERA il valore temporale del denaro (attualizza i flussi).'
     }, {
-        id: 143,
+        id: 148,
         argomento: 'Capitalizzazione',
         lezione: 'Lezione 9',
         slide: 'Pag. 4-6',
@@ -2920,9 +2117,9 @@ const DOMANDE = [
             'L\'interesse semplice produce un montante maggiore dell\'interesse composto'
         ],
         corretta: 3,
-        spiegazione: 'L\'interesse composto produce un montante MAGGIORE dell\'interesse semplice.'
+        spiegazione: 'L\'interesse composto produce un montante MAGGIORE dell\'interesse semplice a parità di tasso e durata.'
     }, {
-        id: 144,
+        id: 149,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 26-29',
@@ -2936,7 +2133,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'I flussi di cassa vanno ATTUALIZZATI per calcolare il VAN.'
     }, {
-        id: 145,
+        id: 150,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 30-32',
@@ -2948,23 +2145,23 @@ const DOMANDE = [
             'Il TIR è sempre maggiore del MARR'
         ],
         corretta: 3,
-        spiegazione: 'Il TIR non è sempre maggiore del MARR.'
+        spiegazione: 'Il TIR non è sempre maggiore del MARR; se è minore, il progetto non è accettabile.'
     }, {
-        id: 146,
+        id: 151,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 25-34',
         domanda: 'Quali affermazioni sulla valutazione degli investimenti sono corrette?',
         opzioni: [
-            'Il VAN è la somma dei flussi di cassa attualizzati meno l\'investimento iniziale',
-            'Un progetto è accettabile se VAN > 0',
-            'Il TIR è il tasso che rende VAN = 0',
-            'Il Payback considera il valore temporale del denaro'
+            'Il valore attuale netto (VAN) è la somma dei flussi di cassa attualizzati meno l\'investimento iniziale',
+            'Un progetto di investimento è accettabile se il VAN è positivo',
+            'Il tasso interno di rendimento (TIR) è il tasso che rende il VAN pari a zero',
+            'Il periodo di recupero dell\'investimento (PAYBACK) considera il valore temporale del denaro'
         ],
         corretta: 3,
-        spiegazione: 'Il Payback NON considera il valore temporale del denaro.'
+        spiegazione: 'Il Payback (non attualizzato) NON considera il valore temporale del denaro. Esiste il Payback attualizzato.'
     }, {
-        id: 147,
+        id: 152,
         argomento: 'Capitalizzazione',
         lezione: 'Lezione 9',
         slide: 'Pag. 4-9',
@@ -2976,23 +2173,23 @@ const DOMANDE = [
             'Nell\'interesse composto, gli interessi maturati non vengono capitalizzati'
         ],
         corretta: 3,
-        spiegazione: 'Nell\'interesse composto, gli interessi VENGONO capitalizzati.'
+        spiegazione: 'Nell\'interesse composto, gli interessi VENGONO capitalizzati (producono a loro volta interessi).'
     }, {
-        id: 148,
+        id: 153,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 23-24',
         domanda: 'Quali affermazioni sui costi nella valutazione degli investimenti sono corrette?',
         opzioni: [
             'Il costo di opportunità è il beneficio che si perde a seguito di una decisione',
-            'I costi di opportunità devono essere considerati nella valutazione',
+            'I costi di opportunità devono essere considerati nella valutazione economico-finanziaria di un progetto',
             'I sunk cost sono costi già sostenuti che non possono essere recuperati',
-            'I sunk cost devono essere considerati nelle decisioni di investimento'
+            'I sunk cost devono essere considerati nelle decisioni di investimento perché rappresentano un esborso già effettuato'
         ],
         corretta: 3,
-        spiegazione: 'I sunk cost sono costi già sostenuti e irrecuperabili. NON vanno considerati.'
+        spiegazione: 'I sunk cost sono costi già sostenuti e irrecuperabili. NON vanno considerati nelle decisioni future.'
     }, {
-        id: 149,
+        id: 154,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 25-34',
@@ -3006,7 +2203,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il Payback NON considera il valore temporale del denaro.'
     }, {
-        id: 150,
+        id: 155,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 30-32',
@@ -3018,9 +2215,9 @@ const DOMANDE = [
             'Il MARR è sempre uguale al TIR'
         ],
         corretta: 3,
-        spiegazione: 'Il MARR è un tasso minimo richiesto, mentre il TIR è il tasso interno del progetto.'
+        spiegazione: 'Il MARR è un tasso minimo richiesto, mentre il TIR è il tasso interno del progetto. Non sono sempre uguali.'
     }, {
-        id: 151,
+        id: 156,
         argomento: 'Capitalizzazione',
         lezione: 'Lezione 9',
         slide: 'Pag. 4-9',
@@ -3034,7 +2231,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'attualizzazione CONSIDERA il valore temporale del denaro.'
     }, {
-        id: 152,
+        id: 157,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 25-34',
@@ -3046,9 +2243,9 @@ const DOMANDE = [
             'Il VAN è l\'unico criterio di valutazione esistente'
         ],
         corretta: 3,
-        spiegazione: 'Il VAN è uno dei criteri di valutazione, non l\'unico.'
+        spiegazione: 'Il VAN è uno dei criteri di valutazione, non l\'unico (esistono TIR, Payback, AE).'
     }, {
-        id: 153,
+        id: 158,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 33-34',
@@ -3060,9 +2257,9 @@ const DOMANDE = [
             'Il Payback attualizzato è identico al Payback semplice'
         ],
         corretta: 3,
-        spiegazione: 'Il Payback attualizzato è DIVERSO dal Payback semplice.'
+        spiegazione: 'Il Payback attualizzato è DIVERSO dal Payback semplice perché considera il valore temporale del denaro.'
     }, {
-        id: 154,
+        id: 159,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 25-34',
@@ -3076,7 +2273,7 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'L\'AE è DIVERSO dal VAN; è il VAN trasformato in una rendita annuale costante.'
     }, {
-        id: 155,
+        id: 160,
         argomento: 'Valutazione Investimenti',
         lezione: 'Lezione 9',
         slide: 'Pag. 30-32',
@@ -3092,12 +2289,12 @@ const DOMANDE = [
     },
 
     // ============================================================
-    // MACROECONOMIA (ID 156-170)
+    // MACROECONOMIA (ID 161-175)
     // ============================================================
     {
-        id: 156,
+        id: 161,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sul PIL sono corrette?',
         opzioni: [
@@ -3109,37 +2306,51 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il deflatore del PIL è il rapporto tra PIL NOMINALE e PIL REALE: Deflatore = PILnominale / PILreale.'
     }, {
-        id: 157,
+        id: 162,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
-        domanda: 'Quali affermazioni sul PIL pro capite sono corrette?',
+        domanda: 'Quali affermazioni sul PIL sono corrette?',
         opzioni: [
             'Il PIL pro capite si calcola dividendo il PIL per il numero di abitanti',
-            'Il PIL pro capite è un indicatore del benessere medio',
-            'Il PIL pro capite può crescere anche se il PIL totale non cresce',
-            'Il PIL pro capite si calcola dividendo il PIL per il numero di imprese'
+            'Le esportazioni sono merci prodotte internamente e vendute all\'estero',
+            'Il PIL nominale è calcolato a prezzi correnti',
+            'Il PIL reale è calcolato a prezzi correnti'
         ],
         corretta: 3,
-        spiegazione: 'Il PIL pro capite si calcola dividendo il PIL per il numero di ABITANTI.'
+        spiegazione: 'Il PIL reale è calcolato a prezzi COSTANTI (di un anno base), non correnti.'
     }, {
-        id: 158,
+        id: 163,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
+        slide: 'Pag. 4 (prova esame)',
+        domanda: 'Quali affermazioni sul calcolo del PIL sono corrette?',
+        opzioni: [
+            'PIL = C + I + G + (X - M)',
+            'La spesa pubblica (G) include i trasferimenti',
+            'I trasferimenti non sono inclusi nel PIL',
+            'Gli investimenti (I) sono inclusi nel PIL'
+        ],
+        corretta: 1,
+        spiegazione: 'La spesa pubblica (G) NON include i trasferimenti (che sono esclusi dal PIL).'
+    }, {
+        id: 164,
+        argomento: 'Macroeconomia',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sul tasso di disoccupazione sono corrette?',
         opzioni: [
-            'Il tasso di disoccupazione considera solo le persone in età lavorativa',
-            'Il tasso di disoccupazione considera solo chi cerca attivamente lavoro',
-            'Il tasso di disoccupazione esclude gli inattivi (studenti, pensionati)',
-            'Il tasso di disoccupazione include tutte le persone che non lavorano'
+            'Il tasso di disoccupazione si calcola considerando solo gli individui in età lavorativa',
+            'I disoccupati sono coloro che cercano attivamente lavoro',
+            'Gli inattivi non sono considerati nel calcolo del tasso di disoccupazione',
+            'Il tasso di disoccupazione include tutti gli individui che non lavorano'
         ],
         corretta: 3,
-        spiegazione: 'Il tasso di disoccupazione NON include tutti i non occupati.'
+        spiegazione: 'Il tasso di disoccupazione NON include tutti i non occupati (esclude studenti, pensionati, inattivi).'
     }, {
-        id: 159,
+        id: 165,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sull\'offerta aggregata sono corrette?',
         opzioni: [
@@ -3151,23 +2362,37 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Le politiche di DOMANDA aumentano la domanda aggregata, non l\'offerta aggregata.'
     }, {
-        id: 160,
+        id: 166,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
-        domanda: 'Quali affermazioni sul PIL sono corrette?',
+        domanda: 'Quali affermazioni sul PIL pro capite sono corrette?',
         opzioni: [
-            'PIL = C + I + G + (X - M)',
-            'La spesa pubblica (G) include i trasferimenti',
-            'I trasferimenti non sono inclusi nel PIL',
-            'Gli investimenti (I) sono inclusi nel PIL'
+            'Il PIL pro capite è il PIL diviso per il numero di abitanti',
+            'Il PIL pro capite è un indicatore del benessere medio',
+            'Il PIL pro capite può crescere anche se il PIL totale non cresce',
+            'Il PIL pro capite è il PIL diviso per il numero di imprese'
         ],
-        corretta: 1,
-        spiegazione: 'La spesa pubblica (G) NON include i trasferimenti (che sono esclusi dal PIL).'
+        corretta: 3,
+        spiegazione: 'Il PIL pro capite è il PIL diviso per il numero di ABITANTI, non per il numero di imprese.'
     }, {
-        id: 161,
+        id: 167,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
+        slide: 'Pag. 4 (prova esame)',
+        domanda: 'Quali affermazioni sul deflatore del PIL sono corrette?',
+        opzioni: [
+            'Il deflatore del PIL è il rapporto tra PIL nominale e PIL reale',
+            'Il deflatore del PIL misura l\'inflazione',
+            'Se il deflatore è maggiore di 1, i prezzi sono aumentati rispetto all\'anno base',
+            'Il deflatore del PIL è il rapporto tra PIL reale e PIL nominale'
+        ],
+        corretta: 3,
+        spiegazione: 'Il deflatore è il rapporto tra PIL NOMINALE e PIL REALE, non il contrario.'
+    }, {
+        id: 168,
+        argomento: 'Macroeconomia',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sul PIL nominale e reale sono corrette?',
         opzioni: [
@@ -3177,11 +2402,11 @@ const DOMANDE = [
             'Il PIL nominale e reale sono sempre uguali'
         ],
         corretta: 3,
-        spiegazione: 'PIL nominale e reale sono DIVERSI quando ci sono variazioni dei prezzi.'
+        spiegazione: 'PIL nominale e reale sono DIVERSI quando ci sono variazioni dei prezzi (inflazione).'
     }, {
-        id: 162,
+        id: 169,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sui trasferimenti pubblici sono corrette?',
         opzioni: [
@@ -3191,11 +2416,11 @@ const DOMANDE = [
             'I trasferimenti sono inclusi nel PIL'
         ],
         corretta: 3,
-        spiegazione: 'I trasferimenti NON sono inclusi nel PIL.'
+        spiegazione: 'I trasferimenti NON sono inclusi nel PIL perché non rappresentano produzione di beni o servizi.'
     }, {
-        id: 163,
+        id: 170,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sulle esportazioni e importazioni sono corrette?',
         opzioni: [
@@ -3205,11 +2430,11 @@ const DOMANDE = [
             'Le importazioni aumentano il PIL'
         ],
         corretta: 3,
-        spiegazione: 'Le importazioni RIDUCONO il PIL (vengono sottratte).'
+        spiegazione: 'Le importazioni RIDUCONO il PIL (vengono sottratte nella formula PIL = C + I + G + X - M).'
     }, {
-        id: 164,
+        id: 171,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sul tasso di disoccupazione sono corrette?',
         opzioni: [
@@ -3219,25 +2444,25 @@ const DOMANDE = [
             'Il tasso di disoccupazione include tutte le persone che non lavorano'
         ],
         corretta: 3,
-        spiegazione: 'Il tasso di disoccupazione NON include tutte le persone che non lavorano.'
+        spiegazione: 'Il tasso di disoccupazione NON include tutte le persone che non lavorano (esclude studenti, pensionati, casalinghe).'
     }, {
-        id: 165,
+        id: 172,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sulle politiche economiche sono corrette?',
         opzioni: [
             'Le politiche fiscali influenzano il PIL attraverso la spesa pubblica e le tasse',
-            'Le politiche monetarie influenzano il PIL attraverso il tasso di interesse',
+            'Le politiche monetarie influenzano il PIL attraverso il tasso di interesse e la moneta',
             'Le politiche dal lato dell\'offerta aumentano il prodotto potenziale',
             'Le politiche monetarie influenzano direttamente l\'offerta aggregata'
         ],
         corretta: 3,
-        spiegazione: 'Le politiche monetarie influenzano la DOMANDA aggregata.'
+        spiegazione: 'Le politiche monetarie influenzano la DOMANDA aggregata, non direttamente l\'offerta aggregata.'
     }, {
-        id: 166,
+        id: 173,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sul PIL sono corrette?',
         opzioni: [
@@ -3249,9 +2474,9 @@ const DOMANDE = [
         corretta: 3,
         spiegazione: 'Il PIL NON include i beni intermedi per evitare la doppia contabilità.'
     }, {
-        id: 167,
+        id: 174,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sull\'economia positiva e normativa sono corrette?',
         opzioni: [
@@ -3261,11 +2486,11 @@ const DOMANDE = [
             'L\'economia normativa può essere verificata empiricamente'
         ],
         corretta: 3,
-        spiegazione: 'L\'economia normativa NON può essere verificata empiricamente.'
+        spiegazione: 'L\'economia normativa NON può essere verificata empiricamente perché esprime giudizi di valore (es. "il governo dovrebbe...").'
     }, {
-        id: 168,
+        id: 175,
         argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
+        lezione: 'Lezione 1 (appunti)',
         slide: 'Pag. 4 (prova esame)',
         domanda: 'Quali affermazioni sull\'offerta e domanda aggregata sono corrette?',
         opzioni: [
@@ -3275,56 +2500,28 @@ const DOMANDE = [
             'La domanda aggregata dipende solo dai prezzi'
         ],
         corretta: 3,
-        spiegazione: 'La domanda aggregata dipende da molti fattori: reddito, prezzi, aspettative, ecc.'
-    }, {
-        id: 169,
-        argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
-        slide: 'Pag. 4 (prova esame)',
-        domanda: 'Quali affermazioni sul deflatore del PIL sono corrette?',
-        opzioni: [
-            'Il deflatore del PIL è il rapporto tra PIL nominale e PIL reale',
-            'Il deflatore del PIL misura l\'inflazione',
-            'Se il deflatore è maggiore di 1, i prezzi sono aumentati rispetto all\'anno base',
-            'Il deflatore del PIL è il rapporto tra PIL reale e PIL nominale'
-        ],
-        corretta: 3,
-        spiegazione: 'Il deflatore è il rapporto tra PIL NOMINALE e PIL REALE.'
-    }, {
-        id: 170,
-        argomento: 'Macroeconomia',
-        lezione: 'Lezione 1',
-        slide: 'Pag. 4 (prova esame)',
-        domanda: 'Quali affermazioni sul PIL pro capite sono corrette?',
-        opzioni: [
-            'Il PIL pro capite è il PIL diviso per il numero di abitanti',
-            'Il PIL pro capite è un indicatore del benessere medio',
-            'Il PIL pro capite può crescere anche se il PIL totale non cresce',
-            'Il PIL pro capite è il PIL diviso per il numero di imprese'
-        ],
-        corretta: 3,
-        spiegazione: 'Il PIL pro capite è il PIL diviso per il numero di ABITANTI, non per il numero di imprese.'
+        spiegazione: 'La domanda aggregata dipende da molti fattori: reddito, prezzi, aspettative, politica monetaria, ecc.'
     },
 
     // ============================================================
-    // TEORIA DELLA PRODUZIONE (ID 171-180)
+    // TEORIA DELLA PRODUZIONE (ID 176-185)
     // ============================================================
     {
-        id: 171,
+        id: 176,
         argomento: 'Teoria della Produzione',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
         domanda: 'Quali affermazioni sulla funzione di produzione sono corrette?',
         opzioni: [
-            'La funzione di produzione indica la massima quantità di output producibile con dati input',
-            'Il prodotto marginale del lavoro è la variazione del prodotto per un\'unità aggiuntiva di lavoro',
-            'La legge dei rendimenti decrescenti afferma che il prodotto marginale del lavoro diminuisce oltre un certo punto',
+            'La funzione di produzione indica la massima quantità di output producibile con date quantità di input',
+            'Il prodotto marginale del lavoro è la variazione del prodotto totale per un\'unità aggiuntiva di lavoro',
+            'La legge dei rendimenti decrescenti afferma che, oltre un certo punto, il prodotto marginale del lavoro diminuisce',
             'La legge dei rendimenti decrescenti vale nel lungo periodo'
         ],
         corretta: 3,
-        spiegazione: 'La legge dei rendimenti decrescenti vale nel BREVE periodo.'
+        spiegazione: 'La legge dei rendimenti decrescenti vale nel BREVE periodo, quando almeno un fattore produttivo è fisso.'
     }, {
-        id: 172,
+        id: 177,
         argomento: 'Teoria della Produzione',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
@@ -3336,9 +2533,9 @@ const DOMANDE = [
             'Il prodotto marginale del lavoro è sempre crescente'
         ],
         corretta: 3,
-        spiegazione: 'Il prodotto marginale del lavoro non è sempre crescente.'
+        spiegazione: 'Il prodotto marginale del lavoro non è sempre crescente; dopo un certo punto diminuisce (rendimenti decrescenti).'
     }, {
-        id: 173,
+        id: 178,
         argomento: 'Teoria della Produzione',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
@@ -3350,9 +2547,9 @@ const DOMANDE = [
             'I fattori produttivi sono sempre variabili nel breve periodo'
         ],
         corretta: 3,
-        spiegazione: 'Nel breve periodo ALMENO UN fattore produttivo è fisso.'
+        spiegazione: 'Nel breve periodo ALMENO UN fattore produttivo è fisso (non tutti sono variabili).'
     }, {
-        id: 174,
+        id: 179,
         argomento: 'Teoria della Produzione',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
@@ -3364,9 +2561,9 @@ const DOMANDE = [
             'La produttività media del lavoro è sempre crescente'
         ],
         corretta: 3,
-        spiegazione: 'La produttività media del lavoro NON è sempre crescente.'
+        spiegazione: 'La produttività media del lavoro NON è sempre crescente; ha forma a U (prima cresce, poi diminuisce).'
     }, {
-        id: 175,
+        id: 180,
         argomento: 'Teoria della Produzione',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
@@ -3378,937 +2575,290 @@ const DOMANDE = [
             'Tutti gli input sono fissi nel breve periodo'
         ],
         corretta: 3,
-        spiegazione: 'Nel breve periodo ALMENO UN input è fisso, ma non tutti.'
-    }, {
-        id: 176,
-        argomento: 'Teoria della Produzione',
-        lezione: 'Lezione 6',
-        slide: 'Pag. 40-44',
-        domanda: 'Quali affermazioni sulla produttività marginale sono corrette?',
+        spiegazione: 'Nel breve periodo ALMENO UN input è fisso, ma non tutti. Alcuni input possono essere variati.'
+    },
+    // ============================================================
+    // DOMANDE "STRONZE" - TUTTE VERE (ID 181-200+)
+    // ============================================================
+    {
+        id: 181,
+        argomento: 'Domanda e Offerta',
+        lezione: 'Lezione 2',
+        slide: 'Pag. 8-12',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul prezzo di equilibrio sono corrette? (TUTTE VERE!)',
         opzioni: [
-            'Il prodotto marginale è la variazione del prodotto totale per unità aggiuntiva di input',
-            'Il prodotto marginale del lavoro è decrescente per la legge dei rendimenti decrescenti',
-            'Il prodotto marginale del lavoro può essere negativo',
-            'Il prodotto marginale del lavoro è sempre positivo'
+            'Prezzo di equilibrio: Qd = Qs',
+            'Se P > Pe → eccesso di offerta',
+            'Se P < Pe → eccesso di domanda',
+            'Con eccesso di domanda, la quantità scambiata è determinata dall\'offerta'
         ],
-        corretta: 3,
-        spiegazione: 'Il prodotto marginale del lavoro può diventare NEGATIVO oltre un certo punto.'
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Non c\'è una non corretta.'
     }, {
-        id: 177,
-        argomento: 'Teoria della Produzione',
-        lezione: 'Lezione 6',
-        slide: 'Pag. 40-44',
-        domanda: 'Quali affermazioni sui rendimenti di scala sono corrette?',
+        id: 182,
+        argomento: 'Principio Costi-Benefici',
+        lezione: 'Lezione 1',
+        slide: 'Pag. 13-14',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul principio costi-benefici sono corrette? (TUTTE VERE!)',
         opzioni: [
-            'I rendimenti di scala si riferiscono al lungo periodo',
-            'Rendimenti crescenti di scala: l\'output aumenta più che proporzionalmente rispetto agli input',
-            'Rendimenti costanti di scala: l\'output aumenta in modo proporzionale agli input',
-            'I rendimenti di scala si riferiscono al breve periodo'
+            'Si agisce se i benefici aggiuntivi superano i costi aggiuntivi',
+            'B(x) è il prezzo massimo che si è disposti a pagare',
+            'C(x) è il valore delle risorse a cui si rinuncia',
+            'Si agisce se B(x) > C(x)'
         ],
-        corretta: 3,
-        spiegazione: 'I rendimenti di scala si riferiscono al LUNGO periodo (tutti gli input sono variabili).'
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
     }, {
-        id: 178,
+        id: 183,
+        argomento: 'Concorrenza Perfetta',
+        lezione: 'Lezione 7',
+        slide: 'Pag. 7-11',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sulla concorrenza perfetta sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Le imprese sono price-taker',
+            'Il prodotto è omogeneo',
+            'Esiste perfetta informazione',
+            'Esiste completa libertà di entrata e uscita'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Sono le 4 ipotesi della concorrenza perfetta.'
+    }, {
+        id: 184,
+        argomento: 'Monopolio',
+        lezione: 'Lezione 7',
+        slide: 'Pag. 22-28',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul monopolio sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Il monopolista è l\'unico offerente',
+            'Il monopolista è price-maker',
+            'Nel monopolio, MR < P',
+            'Il monopolista massimizza dove MR = MC'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 185,
+        argomento: 'Elasticità della Domanda',
+        lezione: 'Lezione 3',
+        slide: 'Pag. 9-11',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sull\'elasticità sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'L\'elasticità misura la reattività della quantità al prezzo',
+            'L\'elasticità è il rapporto tra variazioni percentuali di Q e P',
+            'L\'elasticità della domanda è sempre negativa (o zero)',
+            'L\'elasticità è il rapporto tra variazioni assolute di Q e P'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 186,
+        argomento: 'Curve di Indifferenza',
+        lezione: 'Lezione 4',
+        slide: 'Pag. 13-23',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sulle curve di indifferenza sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Hanno pendenza negativa',
+            'Non si intersecano',
+            'Più alte = più utilità',
+            'Il MRS è la pendenza'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Sono le proprietà fondamentali delle curve di indifferenza.'
+    }, {
+        id: 187,
+        argomento: 'Oligopolio',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 2-6',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sull\'oligopolio sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Poche imprese',
+            'Interdipendenza strategica',
+            'Barriere all\'entrata',
+            'Le imprese tengono conto delle reazioni dei concorrenti'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Sono le caratteristiche fondamentali dell\'oligopolio.'
+    }, {
+        id: 188,
+        argomento: 'Breve e Lungo Periodo',
+        lezione: 'Lezione 6',
+        slide: 'Pag. 13-14',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni su breve e lungo periodo sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Nel breve, almeno un fattore è fisso',
+            'Nel lungo, tutti i fattori sono variabili',
+            'Nel breve, esistono costi fissi',
+            'Nel lungo, non esistono costi fissi'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Sono le definizioni di breve e lungo periodo.'
+    }, {
+        id: 189,
+        argomento: 'Teoria dei Giochi',
+        lezione: 'Lezione 8',
+        slide: 'Pag. 13-17',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul dilemma del prigioniero sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'La strategia dominante è non cooperare',
+            'L\'equilibrio di Nash è non cooperare, non cooperare',
+            'Cooperare, cooperare sarebbe l\'ottimo paretiano',
+            'La collusione è instabile perché c\'è incentivo a tradire'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Il dilemma del prigioniero mostra che la strategia dominante è non cooperare.'
+    }, {
+        id: 190,
+        argomento: 'Valutazione Investimenti',
+        lezione: 'Lezione 9',
+        slide: 'Pag. 25-34',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul VAN sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Il VAN è la somma dei flussi attualizzati meno l\'investimento iniziale',
+            'Se VAN > 0, il progetto è accettabile',
+            'Il VAN considera il valore temporale del denaro',
+            'Il VAN è un metodo reddituale (Discounted Cash Flow)'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE! Il VAN è un metodo DCF che considera il valore temporale del denaro.'
+    }, {
+        id: 191,
+        argomento: 'Macroeconomia',
+        lezione: 'Lezione 1 (appunti)',
+        slide: 'Pag. 4 (prova esame)',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul PIL sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'PIL = C + I + G + (X - M)',
+            'Le esportazioni nette sono X - M',
+            'I trasferimenti non sono inclusi nel PIL',
+            'Il PIL include i beni e servizi finali'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 192,
+        argomento: 'Economie di Scala',
+        lezione: 'Lezione 6',
+        slide: 'Pag. 22-30',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sulle economie di scala sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Le economie di scala riducono il costo medio nel lungo periodo',
+            'Le economie di scala derivano dalla specializzazione',
+            'Le economie di scala derivano dall\'indivisibilità dei fattori',
+            'Le economie di scala sono sempre presenti'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 193,
+        argomento: 'Concorrenza Monopolistica',
+        lezione: 'Lezione 7',
+        slide: 'Pag. 30-39',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sulla concorrenza monopolistica sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Prodotto differenziato',
+            'Libertà di entrata nel lungo periodo',
+            'Extra-profitti nel breve periodo',
+            'Profitti nulli nel lungo periodo'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 194,
+        argomento: 'Capitalizzazione',
+        lezione: 'Lezione 9',
+        slide: 'Pag. 4-6',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sui regimi di interesse sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Nell\'interesse composto, gli interessi si capitalizzano',
+            'Nell\'interesse semplice, gli interessi non si capitalizzano',
+            'L\'interesse composto produce più dell\'interesse semplice a parità di tasso',
+            'Il montante nell\'interesse semplice è F = P(1+in)'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 195,
+        argomento: 'Errori Decisionali',
+        lezione: 'Lezione 1',
+        slide: 'Pag. 17-21',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sui costi sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Il costo-opportunità è il valore dell\'alternativa migliore scartata',
+            'Il costo-opportunità può essere non monetario',
+            'I sunk cost vanno ignorati',
+            'Il tempo ha un costo-opportunità'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 196,
         argomento: 'Teoria della Produzione',
         lezione: 'Lezione 6',
         slide: 'Pag. 40-44',
-        domanda: 'Quali affermazioni sulla legge dei rendimenti decrescenti sono corrette?',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sulla produzione sono corrette? (TUTTE VERE!)',
         opzioni: [
-            'La legge dei rendimenti decrescenti si applica quando un input è fisso',
-            'La legge dei rendimenti decrescenti spiega la forma a U della curva di costo marginale',
+            'La funzione di produzione mostra il massimo output ottenibile',
+            'Il prodotto marginale è la variazione di output per unità aggiuntiva di input',
             'La legge dei rendimenti decrescenti vale nel breve periodo',
-            'La legge dei rendimenti decrescenti vale nel lungo periodo'
+            'I rendimenti decrescenti sono dovuti a un fattore fisso'
         ],
-        corretta: 3,
-        spiegazione: 'La legge dei rendimenti decrescenti vale nel BREVE periodo.'
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
     }, {
-        id: 179,
-        argomento: 'Teoria della Produzione',
-        lezione: 'Lezione 6',
-        slide: 'Pag. 40-44',
-        domanda: 'Quali affermazioni sulla relazione tra prodotto marginale e prodotto medio sono corrette?',
+        id: 197,
+        argomento: 'Scelta del Consumatore',
+        lezione: 'Lezione 4',
+        slide: 'Pag. 24-29',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sulla scelta ottima sono corrette? (TUTTE VERE!)',
         opzioni: [
-            'Quando il prodotto marginale è maggiore del prodotto medio, il prodotto medio cresce',
-            'Quando il prodotto marginale è minore del prodotto medio, il prodotto medio decresce',
-            'Il prodotto medio è massimo quando eguaglia il prodotto marginale',
-            'Il prodotto marginale è sempre maggiore del prodotto medio'
+            'Il consumatore massimizza l\'utilità',
+            'Il paniere ottimo è sulla linea di bilancio',
+            'Nell\'ottimo, MRS = rapporto dei prezzi',
+            'Il consumatore spende tutto il reddito'
         ],
-        corretta: 3,
-        spiegazione: 'Il prodotto marginale può essere minore, maggiore o uguale al prodotto medio.'
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
     }, {
-        id: 180,
-        argomento: 'Teoria della Produzione',
-        lezione: 'Lezione 6',
-        slide: 'Pag. 40-44',
-        domanda: 'Quali affermazioni sugli input sono corrette?',
+        id: 198,
+        argomento: 'Valutazione Investimenti',
+        lezione: 'Lezione 9',
+        slide: 'Pag. 30-32',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul TIR sono corrette? (TUTTE VERE!)',
         opzioni: [
-            'Il lavoro è un fattore produttivo variabile nel breve periodo',
-            'Il capitale è un fattore produttivo fisso nel breve periodo',
-            'Nel lungo periodo, sia il lavoro che il capitale sono variabili',
-            'Nel breve periodo, tutti i fattori produttivi sono fissi'
+            'TIR è il tasso che rende VAN = 0',
+            'Se TIR > MARR, il progetto è accettabile',
+            'Il TIR è il tasso interno di rendimento',
+            'Il TIR si calcola per interpolazione'
         ],
-        corretta: 3,
-        spiegazione: 'Nel breve periodo ALMENO UN fattore è fisso, ma non tutti.'
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 199,
+        argomento: 'Domanda e Offerta',
+        lezione: 'Lezione 2',
+        slide: 'Pag. 20-28',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sugli spostamenti della domanda sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Un aumento del reddito sposta la domanda a destra per un bene normale',
+            'Un aumento del prezzo di un sostituto sposta la domanda a destra',
+            'Un aumento del prezzo di un complementare sposta la domanda a sinistra',
+            'Un cambiamento dei gusti sposta la domanda'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
+    }, {
+        id: 200,
+        argomento: 'Monopolio',
+        lezione: 'Lezione 7',
+        slide: 'Pag. 22-28',
+        domanda: '⚠️ INSIDIOSA: Quali affermazioni sul monopolio sono corrette? (TUTTE VERE!)',
+        opzioni: [
+            'Il monopolista ha potere di mercato',
+            'Il monopolista è price-maker',
+            'MR < P in monopolio',
+            'Il monopolista massimizza dove MR = MC'
+        ],
+        corretta: -1,
+        spiegazione: '⚠️ DOMANDA INSIDIOSA: TUTTE le affermazioni sono ESATTE!'
     }
 ];
-        const MATERIALE_STUDIO = [{
-            titolo: '📘 Lezione 1 - Economia Applicata all\'Ingegneria',
-            contenuto: [
-                { testo: '<strong>Ing. Sergio Riotta</strong> - Economia per Ingegneri A.A. 2025/2026', slide: '' },
-                { testo: 'La parola ingegneria deriva dal latino <strong>ingenium</strong>, la stessa radice della parola ingegno.',
-                    slide: 'Pag. 5' },
-                { testo: 'L\'ingegnere applica i risultati della matematica, della fisica, della chimica e il metodo scientifico alla risoluzione di problemi.',
-                    slide: 'Pag. 5' },
-                { testo: 'L\'ingegnere non solo progetta sistemi complessi, ma ne dirige anche la realizzazione e ne gestisce il funzionamento.',
-                    slide: 'Pag. 6' },
-                { testo: 'Il successo delle soluzioni dipende dalla capacità di considerare sia i <strong>fattori economici</strong> che quelli <strong>tecnici</strong> del problema.',
-                    slide: 'Pag. 7' },
-                { testo: 'L\'attività di progettazione, realizzazione e gestione non sono fini a se stesse, ma costituiscono un mezzo per <strong>soddisfare i bisogni umani</strong>.',
-                    slide: 'Pag. 7' },
-                { testo: 'Poiché le <strong>risorse sono limitate</strong>, l\'ingegneria deve essere strettamente connessa all\'economia.',
-                    slide: 'Pag. 7' },
-                { testo: '<strong>Scarsità</strong>: l\'offerta di una risorsa si definisce scarsa in relazione alla domanda.',
-                    slide: 'Pag. 9' },
-                { testo: 'Il <strong>tempo</strong> è una risorsa scarsa per tutti.', slide: 'Pag. 9' },
-                { testo: 'Scarsità non implica necessariamente una <strong>valutazione monetaria</strong>.',
-                slide: 'Pag. 9' },
-                { testo: '<strong>Principio costi-benefici</strong>: un\'azione dovrebbe essere intrapresa solo se i <strong>benefici aggiuntivi</strong> sono almeno pari ai <strong>costi aggiuntivi</strong>.',
-                    slide: 'Pag. 13-14' },
-                { testo: '<strong>B(x)</strong> è il prezzo massimo che sareste disposti a pagare per x.', slide: 'Pag. 15' },
-                { testo: '<strong>C(x)</strong> è il valore di tutte le risorse a cui dovete rinunciare per compiere l\'attività x.',
-                    slide: 'Pag. 15' },
-                { testo: '<strong>Costo-opportunità</strong>: valore dell\'alternativa migliore a cui si rinuncia per intraprendere un\'attività.',
-                    slide: 'Pag. 17' },
-                { testo: '<strong>Sunk cost</strong> (costi non recuperabili): NON vanno considerati nella valutazione di una nuova decisione.',
-                    slide: 'Pag. 19' },
-                { testo: 'Il <strong>beneficio marginale</strong> decresce al crescere del numero di unità consumate (<strong>utilità marginale decrescente</strong>).',
-                    slide: 'Pag. 25' },
-                { testo: '<strong>Microeconomia</strong>: studia le scelte dei singoli agenti economici (consumatori, imprese).',
-                    slide: 'Pag. 37-38' },
-                { testo: '<strong>Macroeconomia</strong>: studia aggregati come PIL, disoccupazione, livello generale dei prezzi.',
-                    slide: 'Pag. 37' },
-                { testo: '<strong>Mano invisibile</strong> (Adam Smith): il perseguimento dell\'interesse personale in un libero mercato può portare a risultati benefici per la società.',
-                    slide: 'Pag. 32-33' }
-            ]
-        }, {
-            titolo: '📘 Lezione 2 - Domanda, Offerta e Mercato',
-            contenuto: [
-                { testo: '<strong>Domanda</strong>: relazione tra la quantità di un bene che gli acquirenti sono disposti ad acquistare e il prezzo del bene.',
-                    slide: 'Pag. 4' },
-                { testo: '<strong>Offerta</strong>: relazione tra la quantità di un bene che i venditori sono disposti a vendere e il prezzo del bene.',
-                    slide: 'Pag. 6' },
-                { testo: 'La <strong>curva di domanda</strong> ha inclinazione <strong>negativa</strong>: al diminuire del prezzo, la quantità domandata aumenta.',
-                    slide: 'Pag. 13' },
-                { testo: 'La <strong>curva di offerta</strong> ha inclinazione <strong>positiva</strong>: al crescere del prezzo, la quantità offerta aumenta.',
-                    slide: 'Pag. 14' },
-                { testo: '<strong>Prezzo di equilibrio</strong>: prezzo in corrispondenza del quale quantità offerta e quantità domandata si eguagliano.',
-                    slide: 'Pag. 9' },
-                { testo: 'Se il prezzo è superiore al prezzo di equilibrio, si verifica un <strong>eccesso di offerta</strong>.',
-                    slide: 'Pag. 11' },
-                { testo: 'Se il prezzo è inferiore al prezzo di equilibrio, si verifica un <strong>eccesso di domanda</strong>.',
-                    slide: 'Pag. 12' },
-                { testo: 'Il <strong>mercato tende automaticamente all\'equilibrio</strong> attraverso l\'aggiustamento dei prezzi.',
-                    slide: 'Pag. 11-12' },
-                { testo: '<strong>Beni sostituti</strong>: un aumento del prezzo di un bene aumenta la domanda dell\'altro (es. autobus e metropolitana).',
-                    slide: 'Pag. 21' },
-                { testo: '<strong>Beni complementari</strong>: un aumento del prezzo di un bene riduce la domanda dell\'altro (es. petrolio e automobili).',
-                    slide: 'Pag. 21' },
-                { testo: '<strong>Beni normali</strong>: la domanda aumenta all\'aumentare del reddito.', slide: 'Pag. 22' },
-                { testo: '<strong>Beni inferiori</strong>: la domanda diminuisce all\'aumentare del reddito (es. pane normale).',
-                    slide: 'Pag. 22' },
-                { testo: 'La curva di domanda si <strong>sposta</strong> per variazioni di: reddito, prezzi dei beni correlati, gusti.',
-                    slide: 'Pag. 24-28' },
-                { testo: 'La curva di offerta si <strong>sposta</strong> per variazioni di: tecnologia, prezzi dei fattori produttivi, regolamentazione pubblica.',
-                    slide: 'Pag. 29-33' }
-            ]
-        }, {
-            titolo: '📘 Lezione 3 - Elasticità della Domanda e dell\'Offerta',
-            contenuto: [
-                { testo: '<strong>Elasticità della domanda rispetto al prezzo</strong>: misura la reattività della quantità domandata alle variazioni del prezzo.',
-                    slide: 'Pag. 2' },
-                { testo: 'L\'elasticità è il rapporto tra la <strong>variazione percentuale</strong> della quantità domandata e la variazione percentuale del prezzo.',
-                    slide: 'Pag. 7' },
-                { testo: 'L\'elasticità della domanda è <strong>sempre negativa</strong> (o zero). Si usa il valore assoluto per comodità.',
-                    slide: 'Pag. 10' },
-                { testo: 'Se |ε| > 1, la domanda è <strong>elastica</strong>.', slide: 'Pag. 16' },
-                { testo: 'Se |ε| < 1, la domanda è <strong>anelastica (rigida)</strong>.', slide: 'Pag. 16' },
-                { testo: 'Se |ε| = 1, la domanda ha <strong>elasticità unitaria</strong>.', slide: 'Pag. 18' },
-                { testo: 'Quanto più un bene ha <strong>sostituti stretti</strong>, tanto più elastica è la sua domanda.',
-                    slide: 'Pag. 19' },
-                { testo: '<strong>Elasticità incrociata</strong>: misura la reattività della domanda di un bene al prezzo di un altro bene.',
-                    slide: 'Pag. 27' },
-                { testo: 'Elasticità incrociata <strong>positiva</strong> → beni <strong>sostituti</strong> (es. tè e caffè).',
-                    slide: 'Pag. 29' },
-                { testo: 'Elasticità incrociata <strong>negativa</strong> → beni <strong>complementari</strong> (es. auto e benzina).',
-                    slide: 'Pag. 29' },
-                { testo: '<strong>Elasticità della domanda rispetto al reddito</strong>: misura la reattività della domanda a variazioni del reddito.',
-                    slide: 'Pag. 31' },
-                { testo: 'Beni <strong>inferiori</strong>: elasticità al reddito <strong>negativa</strong>.', slide: 'Pag. 32' },
-                { testo: 'Beni <strong>di lusso</strong>: elasticità al reddito <strong>maggiore di 1</strong>.',
-                    slide: 'Pag. 33' },
-                { testo: 'Beni <strong>normali</strong>: elasticità al reddito <strong>positiva ma minore di 1</strong>.',
-                    slide: 'Pag. 34' },
-                { testo: '<strong>Elasticità dell\'offerta</strong>: misura la reattività della quantità offerta a variazioni del prezzo. È <strong>positiva</strong>.',
-                    slide: 'Pag. 35' }
-            ]
-        }, {
-            titolo: '📘 Lezione 4 - Teoria della Scelta del Consumatore',
-            contenuto: [
-                { testo: '<strong>Vincolo di bilancio</strong>: insieme di tutti i panieri di beni che il consumatore è in grado di acquistare.',
-                    slide: 'Pag. 5' },
-                { testo: 'La <strong>pendenza</strong> della linea di bilancio rappresenta il <strong>tasso di scambio</strong> tra due beni (prezzo relativo).',
-                    slide: 'Pag. 10' },
-                { testo: 'Un aumento del <strong>reddito</strong> sposta la linea di bilancio <strong>parallelamente</strong> verso destra.',
-                    slide: 'Pag. 11' },
-                { testo: 'Una variazione del <strong>prezzo</strong> di un bene modifica la <strong>pendenza</strong> della linea di bilancio.',
-                    slide: 'Pag. 12' },
-                { testo: '<strong>Curve di indifferenza</strong>: mostrano combinazioni di beni che danno la stessa utilità.',
-                    slide: 'Pag. 13' },
-                { testo: 'Le curve di indifferenza hanno <strong>pendenza negativa</strong> (ipotesi di non sazietà).',
-                    slide: 'Pag. 21' },
-                { testo: 'Le curve di indifferenza <strong>non si intersecano</strong> (ipotesi di transitività).',
-                    slide: 'Pag. 23' },
-                { testo: 'Il <strong>saggio marginale di sostituzione (MRS)</strong> è la pendenza della curva di indifferenza.',
-                    slide: 'Pag. 21' },
-                { testo: 'Il MRS è <strong>decrescente</strong> (si rinuncia a quantità via via minori di un bene per un\'unità aggiuntiva dell\'altro).',
-                    slide: 'Pag. 18' },
-                { testo: 'Il <strong>paniere ottimo</strong> si trova nel punto di <strong>tangenza</strong> tra la linea di bilancio e la curva di indifferenza più alta raggiungibile.',
-                    slide: 'Pag. 26' },
-                { testo: 'Nell\'ottimo: <strong>MRS = rapporto tra i prezzi</strong>.', slide: 'Pag. 26' },
-                { testo: '<strong>Effetto di sostituzione</strong>: cambiamento nella quantità domandata dovuto al cambiamento del prezzo relativo.',
-                    slide: 'Pag. 38' },
-                { testo: '<strong>Effetto di reddito</strong>: cambiamento nella quantità domandata dovuto al cambiamento del reddito reale.',
-                    slide: 'Pag. 38' },
-                { testo: 'Per un <strong>bene normale</strong>, effetto di sostituzione ed effetto di reddito sono <strong>concordi</strong>.',
-                    slide: 'Pag. 39' },
-                { testo: 'Per un <strong>bene di Giffen</strong> (caso estremo di bene inferiore), l\'effetto di reddito prevale sull\'effetto di sostituzione.',
-                    slide: 'Pag. 40' }
-            ]
-        }, {
-            titolo: '📘 Lezione 5 - Teoria dell\'Offerta',
-            contenuto: [
-                { testo: '<strong>Ricavi</strong>: valore monetario delle entrate dell\'impresa (RT).', slide: 'Pag. 4' },
-                { testo: '<strong>Costi</strong>: valore monetario delle spese sostenute per produrre (CT).',
-                    slide: 'Pag. 4' },
-                { testo: '<strong>Profitto</strong>: differenza tra ricavo totale e costo totale (π = RT - CT).',
-                    slide: 'Pag. 4' },
-                { testo: '<strong>Costo marginale (MC)</strong>: variazione del costo totale per un\'unità aggiuntiva.',
-                    slide: 'Pag. 22' },
-                { testo: '<strong>Ricavo marginale (MR)</strong>: variazione del ricavo totale per un\'unità aggiuntiva.',
-                    slide: 'Pag. 22' },
-                { testo: 'La <strong>quantità ottima</strong> di produzione è quella in cui <strong>MR = MC</strong>.',
-                    slide: 'Pag. 31' },
-                { testo: 'Se <strong>MR > MC</strong>, conviene aumentare la produzione.', slide: 'Pag. 30' },
-                { testo: 'Se <strong>MR < MC</strong>, conviene ridurre la produzione.', slide: 'Pag. 30' },
-                { testo: '<strong>Costo fisso (SFC)</strong>: costo indipendente dal volume di produzione.', slide: 'Pag. 14' },
-                { testo: '<strong>Costo variabile (SVC)</strong>: costo che varia al variare del volume di produzione.',
-                    slide: 'Pag. 15' },
-                { testo: '<strong>Conto Economico</strong>: mostra ricavi, costi e profitti dell\'impresa.', slide: 'Pag. 6' },
-                { testo: '<strong>Stato Patrimoniale</strong>: mostra attività, passività e capitale netto.', slide: 'Pag. 7' }
-            ]
-        }, {
-            titolo: '📘 Lezione 6 - Breve e Lungo Periodo',
-            contenuto: [
-                { testo: '<strong>Breve periodo</strong>: orizzonte temporale in cui l\'impresa può variare solo parzialmente gli input (almeno un fattore fisso).',
-                    slide: 'Pag. 14' },
-                { testo: '<strong>Lungo periodo</strong>: orizzonte temporale in cui l\'impresa può variare tutti gli input.',
-                    slide: 'Pag. 14' },
-                { testo: '<strong>Costo totale di breve periodo (STC)</strong> = SFC + SVC', slide: 'Pag. 37' },
-                { testo: '<strong>Costo medio fisso (SAFC)</strong> = SFC / Q → <strong>diminuisce</strong> all\'aumentare di Q.',
-                    slide: 'Pag. 44' },
-                { testo: 'La <strong>legge dei rendimenti decrescenti</strong>: oltre un certo punto, il prodotto marginale del lavoro diminuisce.',
-                    slide: 'Pag. 43' },
-                { testo: 'Nel breve periodo, l\'impresa produce se <strong>P ≥ SAVC minimo</strong> (prezzo di chiusura).',
-                    slide: 'Pag. 45' },
-                { testo: 'Se P < SAVC minimo, l\'impresa <strong>sospende</strong> la produzione.', slide: 'Pag. 46' },
-                { testo: '<strong>Economie di scala</strong>: il costo medio di lungo periodo <strong>diminuisce</strong> al crescere della produzione.',
-                    slide: 'Pag. 23' },
-                { testo: '<strong>Diseconomie di scala</strong>: il costo medio di lungo periodo <strong>aumenta</strong> al crescere della produzione.',
-                    slide: 'Pag. 23' },
-                { testo: 'La curva del <strong>costo medio di lungo periodo (LAC)</strong> ha forma a <strong>U</strong>.',
-                    slide: 'Pag. 21' },
-                { testo: 'Le economie di scala derivano da: <strong>indivisibilità</strong> dei fattori, <strong>specializzazione</strong> del lavoro, <strong>regola dei due terzi</strong>.',
-                    slide: 'Pag. 26-30' }
-            ]
-        }, {
-            titolo: '📘 Lezione 7 - Strutture di Mercato (Parte I)',
-            contenuto: [
-                { testo: '<strong>Concorrenza perfetta</strong>: molte imprese, prodotto omogeneo, libertà di entrata, perfetta informazione.',
-                    slide: 'Pag. 7' },
-                { testo: 'In concorrenza perfetta le imprese sono <strong>price-taker</strong> (subiscono il prezzo).',
-                    slide: 'Pag. 8' },
-                { testo: 'In concorrenza perfetta: <strong>MR = P</strong>.', slide: 'Pag. 13' },
-                { testo: '<strong>Monopolio</strong>: un unico produttore, barriere all\'entrata, price-maker.',
-                    slide: 'Pag. 22-23' },
-                { testo: 'In monopolio: <strong>MR < P</strong>.', slide: 'Pag. 26' },
-                { testo: 'Il monopolista massimizza il profitto producendo dove <strong>MR = MC</strong>.', slide: 'Pag. 28' },
-                { testo: '<strong>Concorrenza monopolistica</strong>: prodotto differenziato, libertà di entrata.',
-                    slide: 'Pag. 30' },
-                { testo: 'Nella concorrenza monopolistica, nel <strong>breve periodo</strong> si possono ottenere extra-profitti.',
-                    slide: 'Pag. 32' },
-                { testo: 'Nella concorrenza monopolistica, nel <strong>lungo periodo</strong> i profitti sono <strong>nulli</strong> (pareggio).',
-                    slide: 'Pag. 36-38' }
-            ]
-        }, {
-            titolo: '📘 Lezione 8 - Strutture di Mercato (Parte II)',
-            contenuto: [
-                { testo: '<strong>Oligopolio</strong>: poche imprese, <strong>interdipendenza strategica</strong>.',
-                    slide: 'Pag. 3-5' },
-                { testo: 'Le imprese in oligopolio devono tenere conto delle <strong>reazioni dei concorrenti</strong>.',
-                    slide: 'Pag. 5' },
-                { testo: 'La <strong>curva di domanda ad angolo</strong> spiega la <strong>vischiosità dei prezzi</strong> in oligopolio.',
-                    slide: 'Pag. 8-12' },
-                { testo: '<strong>Collusione</strong>: accordo tra imprese per determinare quantità e prezzo.', slide: 'Pag. 7' },
-                { testo: '<strong>Cartello</strong>: gruppo di imprese che colludono.', slide: 'Pag. 7' },
-                { testo: 'La collusione è <strong>instabile</strong> perché le imprese hanno incentivo a <strong>tradire</strong> l\'accordo.',
-                    slide: 'Pag. 7' },
-                { testo: '<strong>Teoria dei giochi</strong>: studia il comportamento razionale in condizioni di interdipendenza strategica.',
-                    slide: 'Pag. 13' },
-                { testo: '<strong>Dilemma del prigioniero</strong>: la strategia dominante è <strong>non cooperare</strong>, ma l\'ottimo paretiano sarebbe cooperare.',
-                    slide: 'Pag. 16-17' },
-                { testo: '<strong>Strategia dominante</strong>: la migliore strategia indipendentemente dalle scelte degli altri.',
-                    slide: 'Pag. 15' },
-                { testo: '<strong>Equilibrio di Nash</strong>: situazione in cui nessun giocatore ha incentivo a cambiare strategia.',
-                    slide: 'Pag. 15' },
-                { testo: '<strong>Modello di Cournot</strong>: le imprese competono sulla <strong>quantità</strong>.',
-                    slide: 'Pag. 25-26' },
-                { testo: '<strong>Modello di Bertrand</strong>: le imprese competono sul <strong>prezzo</strong>.',
-                    slide: 'Pag. 25' }
-            ]
-        }, {
-            titolo: '📘 Lezione 9 - Valutazione degli Investimenti',
-            contenuto: [
-                { testo: '<strong>Interesse composto</strong>: F = P(1+i)^n (gli interessi vengono capitalizzati).',
-                    slide: 'Pag. 5' },
-                { testo: '<strong>Interesse semplice</strong>: F = P(1+in) (gli interessi non vengono capitalizzati).',
-                    slide: 'Pag. 4' },
-                { testo: '<strong>Fattore di attualizzazione</strong>: 1/(1+i)^n', slide: 'Pag. 7' },
-                { testo: '<strong>Valore Attuale Netto (VAN)</strong>: somma dei flussi di cassa attualizzati meno l\'investimento iniziale.',
-                    slide: 'Pag. 27-28' },
-                { testo: 'Un progetto è accettabile se <strong>VAN > 0</strong>.', slide: 'Pag. 29' },
-                { testo: '<strong>Tasso Interno di Rendimento (TIR)</strong>: tasso che rende il VAN pari a zero.',
-                    slide: 'Pag. 31' },
-                { testo: 'Un progetto è accettabile se <strong>TIR > MARR</strong>.', slide: 'Pag. 31' },
-                { testo: '<strong>Payback period</strong>: tempo necessario per recuperare l\'investimento iniziale.',
-                    slide: 'Pag. 33-34' },
-                { testo: 'Il Payback period <strong>NON</strong> considera il valore temporale del denaro.', slide: 'Pag. 34' },
-                { testo: '<strong>Costi di opportunità</strong>: vanno considerati nella valutazione.', slide: 'Pag. 23' },
-                { testo: '<strong>Sunk cost</strong>: NON vanno considerati nella valutazione (sono costi già sostenuti).',
-                    slide: 'Pag. 24' }
-            ]
-        }, {
-            titolo: '📘 Macroeconomia (dalla prova d\'esame)',
-            contenuto: [
-                { testo: '<strong>PIL</strong> = C + I + G + (X - M)', slide: 'Pag. 4 (prova)' },
-                { testo: '<strong>PIL nominale</strong>: calcolato a <strong>prezzi correnti</strong>.', slide: 'Pag. 4 (prova)' },
-                { testo: '<strong>PIL reale</strong>: calcolato a <strong>prezzi costanti</strong> (anno base).',
-                    slide: 'Pag. 4 (prova)' },
-                { testo: '<strong>Deflatore del PIL</strong> = PIL nominale / PIL reale', slide: 'Pag. 4 (prova)' },
-                { testo: 'I <strong>trasferimenti</strong> (pensioni, sussidi) <strong>non</strong> sono inclusi nel PIL.',
-                    slide: 'Pag. 4 (prova)' },
-                { testo: '<strong>PIL pro capite</strong> = PIL / numero di abitanti', slide: 'Pag. 4 (prova)' },
-                { testo: 'Il <strong>tasso di disoccupazione</strong> considera solo gli individui in età lavorativa che <strong>cercano attivamente lavoro</strong>.',
-                    slide: 'Pag. 4 (prova)' },
-                { testo: 'Le <strong>esportazioni nette</strong> = X - M', slide: 'Pag. 4 (prova)' },
-                { testo: 'Le <strong>politiche dal lato dell\'offerta</strong> (incentivi a ricerca, innovazione, formazione) aumentano il <strong>prodotto potenziale</strong>.',
-                    slide: 'Pag. 4 (prova)' }
-            ]
-        }];
-
-        // ============================================================
-        // LOGICA DELL'APP
-        // ============================================================
-
-        const TOTALE_DOMANDE = DOMANDE.length;
-
-        // Carica progressi da localStorage
-        function caricaProgressi() {
-            const saved = localStorage.getItem('econoquiz_progressi');
-            if (saved) {
-                try { return JSON.parse(saved); } catch (e) {}
-            }
-            return {
-                quiz_completati: 0,
-                domande_fatte: 0,
-                risposte_corrette: 0,
-                domande_visitate: [],
-                errori_per_argomento: {},
-                saltate: 0,
-                cronologia: []
-            };
-        }
-
-        let progressi = caricaProgressi();
-
-        function salvaProgressi() {
-            localStorage.setItem('econoquiz_progressi', JSON.stringify(progressi));
-        }
-
-        // Stato quiz
-        let quizDomande = [];
-        let quizRisposte = [];
-        let domandaCorrente = 0;
-
-        // ============================================================
-        // NAVIGAZIONE
-        // ============================================================
-
-        function mostraPagina(id) {
-            document.querySelectorAll('#homePage, #quizPage, #resultPage, #progressPage, #erroriPage, #cronologiaPage, #studioPage')
-                .forEach(el => el.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function tornaHome() {
-            mostraPagina('homePage');
-            aggiornaHome();
-        }
-
-        function aggiornaHome() {
-            document.getElementById('statQuiz').textContent = progressi.quiz_completati;
-            const media = progressi.domande_fatte > 0 ? Math.round((progressi.risposte_corrette / progressi.domande_fatte) *
-                100) : 0;
-            document.getElementById('statMedia').textContent = media + '%';
-            const completato = Math.min(100, Math.round((progressi.domande_visitate.length / TOTALE_DOMANDE) * 100));
-            document.getElementById('statCompletato').textContent = completato + '%';
-            document.getElementById('totaleDomande').textContent = TOTALE_DOMANDE;
-
-            const errori = progressi.errori_per_argomento || {};
-            const list = document.getElementById('weakTopicsList');
-            if (Object.keys(errori).length === 0) {
-                list.innerHTML = '<div class="text-muted" style="padding:8px 0;">Nessun errore. Continua così! 🎉</div>';
-            } else {
-                const sorted = Object.entries(errori).sort((a, b) => b[1] - a[1]);
-                let html = '';
-                for (let i = 0; i < Math.min(3, sorted.length); i++) {
-                    html +=
-                        `<div class="weak-topic-item"><span>${sorted[i][0]}</span><span class="errors">${sorted[i][1]} errori</span></div>`;
-                }
-                list.innerHTML = html;
-            }
-        }
-
-        // ============================================================
-        // QUIZ
-        // ============================================================
-
-        function iniziaQuiz() {
-            let disponibili = DOMANDE.filter(d => !progressi.domande_visitate.includes(d.id));
-            if (disponibili.length < 6) {
-                disponibili = [...DOMANDE];
-            }
-            for (let i = disponibili.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [disponibili[i], disponibili[j]] = [disponibili[j], disponibili[i]];
-            }
-            quizDomande = disponibili.slice(0, 6);
-            quizRisposte = [];
-            domandaCorrente = 0;
-
-            mostraPagina('quizPage');
-            renderDomanda();
-        }
-
-        function renderDomanda() {
-            const container = document.getElementById('questionsContainer');
-            const d = quizDomande[domandaCorrente];
-            const totale = quizDomande.length;
-
-            document.getElementById('quizProgress').textContent = `Domanda ${domandaCorrente + 1} di ${totale}`;
-            document.getElementById('progressFill').style.width = `${((domandaCorrente + 1) / totale) * 100}%`;
-
-            const lettere = ['a', 'b', 'c', 'd'];
-            const rispostaData = quizRisposte[domandaCorrente];
-
-            let html = `
-                <div class="question-card active">
-                    <div>
-                        <span class="question-number">Domanda ${domandaCorrente + 1}</span>
-                        <span class="question-topic">${d.argomento}</span>
-                        <span class="question-topic" style="background:#e8e8e8;">${d.lezione} ${d.slide}</span>
-                    </div>
-                    <div class="question-text">${d.domanda}</div>
-                    <div class="options">
-            `;
-
-            for (let i = 0; i < d.opzioni.length; i++) {
-                const isSelected = (rispostaData !== undefined && rispostaData === i);
-                const isSkipped = (rispostaData === -1);
-                const selectedClass = isSelected ? 'selected' : (isSkipped ? 'skipped' : '');
-                const checked = isSelected ? 'checked' : '';
-                html += `
-                    <label class="option ${selectedClass}" onclick="selezionaOpzione(${domandaCorrente}, ${i})">
-                        <input type="radio" name="q${domandaCorrente}" value="${i}" ${checked}>
-                        <span class="letter">${lettere[i].toUpperCase()}</span>
-                        <span>${d.opzioni[i]}</span>
-                    </label>
-                `;
-            }
-
-            const isSkipped = (rispostaData === -1);
-            html += `
-                    </div>
-                    ${isSkipped ? '<div style="margin-top:8px;font-size:0.8rem;color:var(--warning);font-weight:700;">⏭ Domanda saltata</div>' : ''}
-                </div>
-            `;
-
-            container.innerHTML = html;
-
-            // Navigazione
-            document.getElementById('prevBtn').style.display = domandaCorrente > 0 ? 'block' : 'none';
-            if (domandaCorrente === totale - 1) {
-                document.getElementById('nextBtn').style.display = 'none';
-                document.getElementById('submitBtn').style.display = 'block';
-                document.getElementById('skipBtn').style.display = 'none';
-            } else {
-                document.getElementById('nextBtn').style.display = 'block';
-                document.getElementById('submitBtn').style.display = 'none';
-                document.getElementById('skipBtn').style.display = 'block';
-            }
-        }
-
-        function selezionaOpzione(indice, valore) {
-            if (quizRisposte[indice] === valore) {
-                // Deseleziona
-                quizRisposte[indice] = undefined;
-            } else {
-                quizRisposte[indice] = valore;
-            }
-            renderDomanda();
-        }
-
-        function saltaDomanda() {
-            quizRisposte[domandaCorrente] = -1; // -1 indica saltata
-            if (domandaCorrente < quizDomande.length - 1) {
-                domandaCorrente++;
-                renderDomanda();
-            } else {
-                inviaQuiz();
-            }
-        }
-
-        function cambiaDomanda(direzione) {
-            const nuova = domandaCorrente + direzione;
-            if (nuova >= 0 && nuova < quizDomande.length) {
-                domandaCorrente = nuova;
-                renderDomanda();
-            }
-        }
-
-        function inviaQuiz() {
-            let corrette = 0;
-            let saltate = 0;
-            let dettagli = [];
-
-            for (let i = 0; i < quizDomande.length; i++) {
-                const d = quizDomande[i];
-                const risposta = quizRisposte[i];
-                const eSaltata = (risposta === -1);
-                const isCorretta = !eSaltata && (risposta === d.corretta);
-
-                if (eSaltata) saltate++;
-                if (isCorretta) corrette++;
-
-                if (!progressi.domande_visitate.includes(d.id)) {
-                    progressi.domande_visitate.push(d.id);
-                }
-
-                if (!isCorretta && !eSaltata) {
-                    if (!progressi.errori_per_argomento[d.argomento]) {
-                        progressi.errori_per_argomento[d.argomento] = 0;
-                    }
-                    progressi.errori_per_argomento[d.argomento]++;
-                }
-
-                dettagli.push({
-                    domanda: d,
-                    risposta: risposta,
-                    corretta: isCorretta,
-                    saltata: eSaltata,
-                    rispostaCorretta: d.corretta
-                });
-            }
-
-            progressi.quiz_completati++;
-            progressi.domande_fatte += quizDomande.length - saltate;
-            progressi.risposte_corrette += corrette;
-            progressi.saltate = (progressi.saltate || 0) + saltate;
-            progressi.cronologia.push({
-                data: new Date().toLocaleString(),
-                punteggio: corrette,
-                totale: quizDomande.length,
-                saltate: saltate
-            });
-            salvaProgressi();
-
-            mostraRisultati(corrette, saltate, dettagli);
-        }
-
-        // ============================================================
-        // RISULTATI
-        // ============================================================
-
-        function mostraRisultati(corrette, saltate, dettagli) {
-            mostraPagina('resultPage');
-
-            const totale = dettagli.length;
-            const sbagliate = totale - corrette - saltate;
-            const percentuale = totale - saltate > 0 ? Math.round((corrette / (totale - saltate)) * 100) : 0;
-
-            document.getElementById('resultScore').innerHTML = `${corrette}<span class="total">/${totale - saltate}</span>`;
-
-            let msg = '';
-            if (saltate === totale) {
-                msg = '⏭ Hai saltato tutte le domande! Prova a rispondere almeno a qualcuna.';
-            } else if (percentuale === 100) {
-                msg = '🎉 PERFETTO! Hai azzeccato tutto!';
-            } else if (percentuale >= 83) {
-                msg = '🌟 Ottimo lavoro! Continua così!';
-            } else if (percentuale >= 67) {
-                msg = '💪 Buon risultato! Rivedi gli errori.';
-            } else if (percentuale >= 50) {
-                msg = '📖 Ripassa un po\'. Hai fatto tanti errori.';
-            } else {
-                msg = '🔴 Hai bisogno di studiare di più. Rivedi le lezioni!';
-            }
-            document.getElementById('resultMessage').textContent = msg;
-
-            document.getElementById('rCorrette').textContent = corrette;
-            document.getElementById('rSaltate').textContent = saltate;
-            document.getElementById('rSbagliate').textContent = sbagliate;
-
-            const media = progressi.domande_fatte > 0 ? Math.round((progressi.risposte_corrette / progressi.domande_fatte) *
-                100) : 0;
-            document.getElementById('resultStats').textContent =
-                `Quiz completati: ${progressi.quiz_completati} • Media: ${media}%`;
-
-            const container = document.getElementById('resultDetails');
-            let html = '<h3 style="font-size:1rem;margin:15px 0 10px;">📖 Dettaglio risposte</h3>';
-            const lettere = ['a', 'b', 'c', 'd'];
-
-            for (let i = 0; i < dettagli.length; i++) {
-                const d = dettagli[i];
-                const isCorretta = d.corretta;
-                const eSaltata = d.saltata;
-                const rispostaUtente = d.risposta;
-
-                let styleClass = 'success-detail';
-                let icon = '✅ Corretta';
-                let borderColor = 'var(--success)';
-                if (eSaltata) {
-                    styleClass = 'skipped-detail';
-                    icon = '⏭ Saltata';
-                    borderColor = 'var(--warning)';
-                } else if (!isCorretta) {
-                    styleClass = 'error-detail';
-                    icon = '❌ Sbagliata';
-                    borderColor = 'var(--danger)';
-                }
-
-                html += `
-                    <div class="question-card active" style="border-color: ${borderColor};">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                            <span class="question-number" style="background:${borderColor};">Domanda ${i+1}</span>
-                            <span style="font-size:0.75rem;font-weight:700;color:${borderColor};">${icon}</span>
-                        </div>
-                        <div class="question-text" style="font-size:0.85rem;">${d.domanda.domanda}</div>
-                `;
-
-                if (eSaltata) {
-                    html += `
-                        <div class="${styleClass}">
-                            <div style="font-size:0.8rem;">Hai saltato questa domanda.</div>
-                            <div class="reference">📄 ${d.domanda.lezione} - ${d.domanda.slide}</div>
-                        </div>
-                    `;
-                } else if (!isCorretta) {
-                    const rispCorr = lettere[d.domanda.corretta].toUpperCase();
-                    html += `
-                        <div class="${styleClass}">
-                            <div class="your-answer">❌ La tua risposta: ${lettere[rispostaUtente].toUpperCase()}</div>
-                            <div class="correct-answer">✅ Risposta corretta: ${rispCorr}</div>
-                            <div class="explanation">${d.domanda.spiegazione}</div>
-                            <div class="reference">📄 ${d.domanda.lezione} - ${d.domanda.slide}</div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="${styleClass}">
-                            <div style="font-size:0.8rem;">${d.domanda.spiegazione}</div>
-                            <div class="reference">📄 ${d.domanda.lezione} - ${d.domanda.slide}</div>
-                        </div>
-                    `;
-                }
-
-                html += `</div>`;
-            }
-
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // PROGRESSI
-        // ============================================================
-
-        function mostraProgressi() {
-            mostraPagina('progressPage');
-
-            document.getElementById('pQuiz').textContent = progressi.quiz_completati;
-            document.getElementById('pDomande').textContent = progressi.domande_fatte;
-            document.getElementById('pCorrette').textContent = progressi.risposte_corrette;
-
-            const completato = Math.min(100, Math.round((progressi.domande_visitate.length / TOTALE_DOMANDE) * 100));
-            document.getElementById('pProgressoTesto').textContent = `${progressi.domande_visitate.length}/${TOTALE_DOMANDE}`;
-            document.getElementById('pProgressoBar').style.width = completato + '%';
-
-            const errori = progressi.errori_per_argomento || {};
-            const container = document.getElementById('pErrori');
-            if (Object.keys(errori).length === 0) {
-                container.innerHTML =
-                    '<div style="text-align:center;padding:20px;background:#f8f7ff;border-radius:16px;font-size:2.5rem;">🎉<br><span style="font-size:0.9rem;color:var(--gray);">Nessun errore!</span></div>';
-            } else {
-                const sorted = Object.entries(errori).sort((a, b) => b[1] - a[1]);
-                let html = '<div style="display:grid;gap:6px;">';
-                for (const [arg, num] of sorted) {
-                    const perc = progressi.domande_fatte > 0 ? Math.round((num / progressi.domande_fatte) * 100) : 0;
-                    const colore = perc > 20 ? 'var(--danger)' : (perc > 10 ? 'var(--warning)' : 'var(--success)');
-                    html += `
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8f7ff;border-radius:8px;border-left:4px solid ${colore};">
-                            <span style="font-size:0.8rem;">${arg}</span>
-                            <span style="font-size:0.8rem;font-weight:700;color:${colore};">${num} errori</span>
-                        </div>
-                    `;
-                }
-                html += '</div>';
-                container.innerHTML = html;
-            }
-
-            const cron = document.getElementById('pCronologia');
-            if (progressi.cronologia.length === 0) {
-                cron.innerHTML = '<div class="text-muted">Nessun quiz completato.</div>';
-            } else {
-                const ultimi = progressi.cronologia.slice(-5).reverse();
-                let html = '<div style="display:grid;gap:6px;">';
-                for (const q of ultimi) {
-                    const perc = q.totale - q.saltate > 0 ? Math.round((q.punteggio / (q.totale - q.saltate)) * 100) : 0;
-                    const colore = perc >= 67 ? 'var(--success)' : (perc >= 50 ? 'var(--warning)' : 'var(--danger)');
-                    html += `
-                        <div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8f7ff;border-radius:6px;font-size:0.8rem;">
-                            <span>${q.data}</span>
-                            <span style="font-weight:700;color:${colore};">${q.punteggio}/${q.totale - q.saltate} ${q.saltate > 0 ? '(saltate: '+q.saltate+')' : ''}</span>
-                        </div>
-                    `;
-                }
-                html += '</div>';
-                cron.innerHTML = html;
-            }
-        }
-
-        // ============================================================
-        // ERRORI
-        // ============================================================
-
-        function mostraErrori() {
-            mostraPagina('erroriPage');
-            const errori = progressi.errori_per_argomento || {};
-            const container = document.getElementById('erroriList');
-
-            if (Object.keys(errori).length === 0) {
-                container.innerHTML =
-                    '<div style="text-align:center;padding:30px;background:#f8f7ff;border-radius:16px;"><div style="font-size:3.5rem;">🎉</div><div style="font-size:1rem;color:var(--gray);margin-top:8px;">Nessun errore! Sei un campione!</div></div>';
-                return;
-            }
-
-            const sorted = Object.entries(errori).sort((a, b) => b[1] - a[1]);
-            let html = '<div style="display:grid;gap:8px;">';
-            let totaleErrori = 0;
-            for (const [arg, num] of sorted) {
-                totaleErrori += num;
-                const perc = progressi.domande_fatte > 0 ? Math.round((num / progressi.domande_fatte) * 100) : 0;
-                const colore = perc > 20 ? 'var(--danger)' : (perc > 10 ? 'var(--warning)' : 'var(--success)');
-                const barWidth = Math.min(100, perc * 5);
-                html += `
-                    <div style="background:#f8f7ff;border-radius:10px;padding:12px;border-left:4px solid ${colore};">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <span style="font-weight:700;font-size:0.9rem;">${arg}</span>
-                            <span style="font-size:1.1rem;font-weight:700;color:${colore};">${num} errori</span>
-                        </div>
-                        <div style="height:5px;background:#e8e8e8;border-radius:10px;overflow:hidden;">
-                            <div style="height:100%;width:${barWidth}%;background:${colore};border-radius:10px;transition:width 0.5s ease;"></div>
-                        </div>
-                        <div style="font-size:0.65rem;color:var(--gray);margin-top:3px;">${perc}% dei tuoi errori</div>
-                    </div>
-                `;
-            }
-            html += `
-                <div style="text-align:center;padding:10px;background:#f8f7ff;border-radius:10px;margin-top:8px;">
-                    <span style="font-size:0.8rem;color:var(--gray);">Totale errori: <strong style="color:var(--danger);">${totaleErrori}</strong></span>
-                </div>
-            `;
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // CRONOLOGIA
-        // ============================================================
-
-        function mostraCronologia() {
-            mostraPagina('cronologiaPage');
-            const container = document.getElementById('cronologiaList');
-
-            if (progressi.cronologia.length === 0) {
-                container.innerHTML =
-                    '<div style="text-align:center;padding:30px;background:#f8f7ff;border-radius:16px;"><div style="font-size:3.5rem;">📭</div><div style="font-size:1rem;color:var(--gray);margin-top:8px;">Nessun quiz completato.</div></div>';
-                return;
-            }
-
-            let html = '<div style="display:grid;gap:6px;">';
-            let totaleQuiz = 0;
-            let totalePunti = 0;
-            let totaleSaltate = 0;
-
-            const cronologia = [...progressi.cronologia].reverse();
-            for (let idx = 0; idx < cronologia.length; idx++) {
-                const q = cronologia[idx];
-                totaleQuiz++;
-                totalePunti += q.punteggio;
-                totaleSaltate += q.saltate || 0;
-                const risposte = q.totale - (q.saltate || 0);
-                const perc = risposte > 0 ? Math.round((q.punteggio / risposte) * 100) : 0;
-                const colore = perc >= 67 ? 'var(--success)' : (perc >= 50 ? 'var(--warning)' : 'var(--danger)');
-                const icon = perc === 100 ? '🌟' : (perc >= 67 ? '✅' : (perc >= 50 ? '📖' : '🔴'));
-
-                html += `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f8f7ff;border-radius:8px;border-left:4px solid ${colore};">
-                        <div>
-                            <div style="font-size:0.8rem;font-weight:600;">${icon} Quiz #${totaleQuiz}</div>
-                            <div style="font-size:0.65rem;color:var(--gray);">${q.data}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-size:1rem;font-weight:700;color:${colore};">${q.punteggio}/${risposte}</div>
-                            <div style="font-size:0.6rem;color:var(--gray);">${perc}% ${q.saltate > 0 ? '• saltate: '+q.saltate : ''}</div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            const mediaCronologia = totaleQuiz > 0 ? Math.round((totalePunti / (totaleQuiz * 6 - totaleSaltate)) * 100) : 0;
-            html += `
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;padding:12px;background:#f8f7ff;border-radius:10px;">
-                    <div style="text-align:center;">
-                        <div style="font-size:1.3rem;font-weight:700;color:var(--primary);">${totaleQuiz}</div>
-                        <div style="font-size:0.6rem;color:var(--gray);">Quiz</div>
-                    </div>
-                    <div style="text-align:center;">
-                        <div style="font-size:1.3rem;font-weight:700;color:var(--success);">${totalePunti}</div>
-                        <div style="font-size:0.6rem;color:var(--gray);">Corrette</div>
-                    </div>
-                    <div style="text-align:center;">
-                        <div style="font-size:1.3rem;font-weight:700;color:var(--secondary);">${mediaCronologia}%</div>
-                        <div style="font-size:0.6rem;color:var(--gray);">Media</div>
-                    </div>
-                </div>
-            `;
-
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // STUDIO
-        // ============================================================
-
-        function mostraStudio() {
-            mostraPagina('studioPage');
-            const container = document.getElementById('studyContainer');
-
-            let html = '';
-            for (const topic of MATERIALE_STUDIO) {
-                html += `
-                    <div class="study-topic">
-                        <div class="study-topic-header" onclick="toggleStudy(this)">
-                            ${topic.titolo}
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="study-topic-content">
-                `;
-                for (const item of topic.contenuto) {
-                    html += `
-                        <div class="study-item">
-                            ${item.testo}
-                            ${item.slide ? `<span class="slide-ref">${item.slide}</span>` : ''}
-                        </div>
-                    `;
-                }
-                html += `
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        function toggleStudy(header) {
-            const content = header.nextElementSibling;
-            const arrow = header.querySelector('.arrow');
-            content.classList.toggle('open');
-            arrow.classList.toggle('open');
-        }
-
-        // ============================================================
-        // ESPORTA / RESET
-        // ============================================================
-
-        function esportaDati() {
-            const data = {
-                esportato_il: new Date().toISOString(),
-                versione: '2.0',
-                progressi: progressi,
-                totale_domande: TOTALE_DOMANDE
-            };
-            const json = JSON.stringify(data, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `econoquiz_backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert('✅ Dati esportati con successo!');
-        }
-
-        function resetProgressi() {
-            if (confirm('⚠️ ATTENZIONE: Cancellerai TUTTI i tuoi progressi! Sei sicuro?')) {
-                progressi = {
-                    quiz_completati: 0,
-                    domande_fatte: 0,
-                    risposte_corrette: 0,
-                    domande_visitate: [],
-                    errori_per_argomento: {},
-                    saltate: 0,
-                    cronologia: []
-                };
-                salvaProgressi();
-                aggiornaHome();
-                alert('✅ Progressi resettati con successo!');
-            }
-        }
-
-        // ============================================================
-        // AVVIO
-        // ============================================================
-
-        setInterval(salvaProgressi, 10000);
-
-        mostraPagina('homePage');
-        aggiornaHome();
-
-        console.log('📚 EconoQuiz v2 caricato!');
-        console.log(`📊 Domande totali: ${TOTALE_DOMANDE}`);
-        console.log(`📈 Quiz completati: ${progressi.quiz_completati}`);
-    </script>
-
-</body>
-</html>
