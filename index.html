@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EconoQuiz - Economia per Ingegneri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            color: #6C63FF;
+        }
+        .header p {
+            color: #888;
+            font-size: .8rem;
+        }
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .stats div {
+            flex: 1;
+            background: #f5f5ff;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stats .num {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #6C63FF;
+        }
+        .stats .label {
+            font-size: .6rem;
+            color: #999;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .menu-item {
+            background: #f5f5ff;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all .2s;
+        }
+        .menu-item:hover {
+            border-color: #6C63FF;
+        }
+        .menu-item .icon {
+            font-size: 1.6rem;
+        }
+        .menu-item .name {
+            font-size: .75rem;
+            font-weight: 700;
+        }
+        .menu-item.full {
+            grid-column: 1/-1;
+            background: linear-gradient(135deg, #6C63FF, #5A52D5);
+            color: #fff;
+            border-color: #6C63FF;
+        }
+        .menu-item.full .name {
+            color: #fff;
+        }
+        .menu-item.full .desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: .7rem;
+        }
+        .question-box {
+            background: #f8f9ff;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+            border: 2px solid #e8e8ff;
+        }
+        .question-topic {
+            display: inline-block;
+            background: #6C63FF;
+            color: #fff;
+            font-size: .6rem;
+            padding: 2px 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        .question-text {
+            font-weight: 700;
+            font-size: .95rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all .2s;
+            background: #fff;
+        }
+        .option:hover {
+            border-color: #6C63FF;
+            background: #f5f5ff;
+        }
+        .option.selected {
+            border-color: #6C63FF;
+            background: #f0efff;
+        }
+        .option .letter {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: .7rem;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .option.selected .letter {
+            background: #6C63FF;
+            color: #fff;
+        }
+        .option.correct {
+            border-color: #2ECC71;
+            background: #e8f8f0;
+        }
+        .option.correct .letter {
+            background: #2ECC71;
+            color: #fff;
+        }
+        .option.wrong {
+            border-color: #E74C3C;
+            background: #fde8e8;
+        }
+        .option.wrong .letter {
+            background: #E74C3C;
+            color: #fff;
+        }
+        .option.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+        .option.disabled:hover {
+            border-color: #e0e0e0;
+            background: #fff;
+        }
+        .nav {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .nav button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .btn-primary {
+            background: #6C63FF;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #5a52d5;
+        }
+        .btn-success {
+            background: #2ECC71;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        .btn-secondary {
+            background: #e8e8e8;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #d5d5d5;
+        }
+        .btn-outline {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #6C63FF;
+            background: transparent;
+            color: #6C63FF;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-outline:hover {
+            background: #6C63FF;
+            color: #fff;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #eee;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6C63FF, #764ba2);
+            border-radius: 4px;
+            transition: width .3s;
+        }
+        .result {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .result .score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #6C63FF;
+        }
+        .result .msg {
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+        .result-detail {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 14px;
+            margin: 8px 0;
+            border-left: 4px solid #6C63FF;
+        }
+        .result-detail.error {
+            border-color: #E74C3C;
+            background: #fde8e8;
+        }
+        .result-detail.success {
+            border-color: #2ECC71;
+            background: #e8f8f0;
+        }
+        .result-detail.skipped {
+            border-color: #F1C40F;
+            background: #fef9e7;
+        }
+        .result-detail .ref {
+            font-size: .65rem;
+            color: #999;
+            margin-top: 4px;
+        }
+        .text-muted {
+            color: #999;
+            font-size: .7rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mt-10 {
+            margin-top: 10px;
+        }
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+        .weak-box {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f5f5ff;
+            border-radius: 12px;
+        }
+        .weak-box .title {
+            font-size: .7rem;
+            font-weight: 700;
+            color: #6C63FF;
+        }
+        .weak-box .list {
+            padding: 4px 0;
+            font-size: .7rem;
+            color: #999;
+        }
+        .error-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: #f5f5ff;
+            border-radius: 6px;
+            margin: 4px 0;
+        }
+        .error-item .count {
+            color: #E74C3C;
+            font-weight: 700;
+        }
+        .cron-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f5f5ff;
+            border-radius: 8px;
+            margin: 4px 0;
+        }
+        .cron-item .date {
+            font-size: .65rem;
+            color: #999;
+        }
+        .cron-item .score {
+            font-weight: 700;
+        }
+        .stats-summary {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .stats-summary div {
+            flex: 1;
+            background: #f5f5ff;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stats-summary .num {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .stats-summary .label {
+            font-size: .55rem;
+            color: #999;
+        }
+        .green {
+            color: #2ECC71;
+        }
+        .red {
+            color: #E74C3C;
+        }
+        .yellow {
+            color: #F1C40F;
+        }
+        .purple {
+            color: #6C63FF;
+        }
+        @media(max-width:480px) {
+            .container {
+                padding: 16px;
+            }
+            .question-text {
+                font-size: .85rem;
+            }
+            .option {
+                padding: 8px 12px;
+                font-size: .85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>📚 EconoQuiz</h1>
+        <p>Economia per Ingegneri - Trova la falsa</p>
+    </div>
+
+    <!-- HOME -->
+    <div id="homePage">
+        <div class="stats">
+            <div><div class="num" id="statQuiz">0</div><div class="label">Quiz fatti</div></div>
+            <div><div class="num" id="statMedia">0%</div><div class="label">Media</div></div>
+            <div><div class="num" id="statCompletato">0%</div><div class="label">Completato</div></div>
+        </div>
+        <div class="menu-grid">
+            <div class="menu-item full" onclick="iniziaQuiz()">
+                <div class="icon" style="color:#fff;">🚀</div>
+                <div class="name" style="color:#fff;">Nuovo Quiz</div>
+                <div class="desc" style="color:rgba(255,255,255,0.7);">6 domande - 3 vere, 1 falsa</div>
+            </div>
+            <div class="menu-item" onclick="mostraProgressi()"><div class="icon">📊</div><div class="name">Progressi</div></div>
+            <div class="menu-item" onclick="mostraErrori()"><div class="icon">🔴</div><div class="name">Errori</div></div>
+            <div class="menu-item" onclick="mostraCronologia()"><div class="icon">📋</div><div class="name">Cronologia</div></div>
+            <div class="menu-item" onclick="resetProgressi()"><div class="icon">🔄</div><div class="name">Reset</div></div>
+        </div>
+        <div class="text-muted text-center">Domande totali: <span id="totaleDomande">0</span></div>
+        <div class="weak-box">
+            <div class="title">🔴 Argomenti da ripassare</div>
+            <div class="list" id="weakTopicsList">Nessun errore. Continua così! 🎉</div>
+        </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quizPage" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:700;">📝 Quiz</span>
+            <span id="quizProgress" style="font-size:.8rem;color:#999;">Domanda 1 di 6</span>
+        </div>
+        <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%;"></div></div>
+        <div id="questionsContainer"></div>
+        <div class="nav">
+            <button class="btn-primary" id="nextBtn" onclick="cambiaDomanda(1)">Avanti ➡</button>
+            <button class="btn-success" id="submitBtn" style="display:none;" onclick="inviaQuiz()">✅ Invia</button>
+        </div>
+        <button class="btn-outline" onclick="tornaHome()">🏠 Menù</button>
+    </div>
+
+    <!-- RISULTATI -->
+    <div id="resultPage" class="hidden">
+        <div class="result">
+            <div class="score" id="resultScore">0<span style="font-size:1.2rem;color:#999;">/6</span></div>
+            <div class="msg" id="resultMessage"></div>
+        </div>
+        <div class="stats-summary">
+            <div><div class="num green" id="rCorrette">0</div><div class="label">Corrette</div></div>
+            <div><div class="num yellow" id="rSaltate">0</div><div class="label">Saltate</div></div>
+            <div><div class="num red" id="rSbagliate">0</div><div class="label">Sbagliate</div></div>
+        </div>
+        <div id="resultDetails"></div>
+        <div class="nav" style="margin-top:12px;">
+            <button class="btn-primary" onclick="iniziaQuiz()">🔄 Nuovo</button>
+            <button class="btn-secondary" onclick="tornaHome()">🏠 Menù</button>
+        </div>
+    </div>
+
+    <!-- PROGRESSI -->
+    <div id="progressPage" class="hidden">
+        <h3 style="margin-bottom:12px;">📊 Progressi</h3>
+        <div class="stats">
+            <div><div class="num" id="pQuiz">0</div><div class="label">Quiz fatti</div></div>
+            <div><div class="num" id="pDomande">0</div><div class="label">Domande</div></div>
+            <div><div class="num" id="pCorrette">0</div><div class="label">Corrette</div></div>
+        </div>
+        <div style="margin:12px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:.7rem;"><span>Progresso</span><span id="pProgressoTesto">0/0</span></div>
+            <div class="progress-bar" style="height:6px;"><div class="fill" id="pProgressoBar" style="width:0%;"></div></div>
+        </div>
+        <h4 style="font-size:.85rem;margin:12px 0 8px;">🔴 Errori per argomento</h4>
+        <div id="pErrori"></div>
+        <h4 style="font-size:.85rem;margin:12px 0 8px;">📋 Ultimi quiz</h4>
+        <div id="pCronologia"></div>
+        <button class="btn-secondary" style="width:100%;padding:12px;border:none;border-radius:12px;font-weight:700;cursor:pointer;margin-top:12px;" onclick="tornaHome()">🏠 Menù</button>
+    </div>
+
+    <!-- ERRORI -->
+    <div id="erroriPage" class="hidden">
+        <h3 style="margin-bottom:12px;">🔴 Errori per Argomento</h3>
+        <div id="erroriList"></div>
+        <div class="nav" style="margin-top:12px;">
+            <button class="btn-secondary" onclick="tornaHome()">🏠 Menù</button>
+            <button class="btn-primary" onclick="iniziaQuiz()">🚀 Nuovo Quiz</button>
+        </div>
+    </div>
+
+    <!-- CRONOLOGIA -->
+    <div id="cronologiaPage" class="hidden">
+        <h3 style="margin-bottom:12px;">📋 Cronologia</h3>
+        <div id="cronologiaList"></div>
+        <button class="btn-secondary" style="width:100%;padding:12px;border:none;border-radius:12px;font-weight:700;cursor:pointer;margin-top:12px;" onclick="tornaHome()">🏠 Menù</button>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// BANCA DATI DOMANDE - STILE "TROVA QUELLA FALSA"
+// ============================================================
+
+const DOMANDE = [
+    // LEZIONE 1 - PRINCIPIO COSTI-BENEFICI
+    { id: 1, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.13-14', domanda: 'Indicare quale affermazione sul principio costi-benefici NON è corretta.', opzioni: ['Il principio suggerisce di agire solo se i benefici aggiuntivi superano i costi aggiuntivi', 'Il beneficio marginale è il beneficio per un\'unità aggiuntiva', 'Il costo marginale è il costo per un\'unità aggiuntiva', 'Il principio suggerisce di agire finché il beneficio medio supera il costo medio'], corretta: 3, spiegazione: 'Il principio costi-benefici si basa sul confronto tra BENEFICI MARGINALI e COSTI MARGINALI, non sui valori medi.' },
+    { id: 2, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.14-15', domanda: 'Indicare quale affermazione sull\'approccio costi-benefici NON è corretta.', opzioni: ['B(x) è il prezzo massimo che sareste disposti a pagare per x', 'C(x) è il valore delle risorse a cui rinunciate per fare x', 'Un\'azione va fatta solo se B(x) > C(x)', 'I costi non recuperabili vanno sempre considerati in C(x)'], corretta: 3, spiegazione: 'I costi non recuperabili (sunk cost) NON vanno considerati nella valutazione C(x).' },
+    { id: 3, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.16', domanda: 'Indicare quale affermazione sul principio costi-benefici NON è corretta.', opzioni: ['Il costo-opportunità è il valore dell\'alternativa migliore a cui si rinuncia', 'Il tempo è una risorsa scarsa che ha un costo-opportunità', 'Il prezzo di riserva è la somma minima che vi convincerebbe a fare x', 'Il beneficio marginale è sempre costante al crescere delle unità consumate'], corretta: 3, spiegazione: 'Il beneficio marginale DECRESCE al crescere delle unità consumate (utilità marginale decrescente).' },
+    { id: 4, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.13-15', domanda: 'Indicare quale affermazione sul principio costi-benefici NON è corretta.', opzioni: ['L\'approccio costi-benefici confronta benefici e costi di un\'azione', 'La regola decisionale è: fai x se B(x) > C(x)', 'Costi e benefici vanno misurati solo in termini monetari', 'Costi e benefici possono essere misurati anche in termini non monetari'], corretta: 2, spiegazione: 'Una valutazione monetaria è utile anche quando l\'attività non ha implicazioni monetarie dirette.' },
+    { id: 5, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.15-16', domanda: 'Indicare quale affermazione sul prezzo di riserva NON è corretta.', opzioni: ['Il prezzo di riserva è la somma minima che vi convincerebbe a fare x', 'Il prezzo di riserva è il valore che attribuite a un\'attività', 'Il prezzo di riserva è sempre uguale al prezzo di mercato', 'Il prezzo di riserva può essere usato per misurare B(x)'], corretta: 2, spiegazione: 'Il prezzo di riserva è soggettivo e non è necessariamente uguale al prezzo di mercato.' },
+    { id: 6, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.11-12', domanda: 'Indicare quale affermazione sul trade-off costi-benefici NON è corretta.', opzioni: ['Esiste sempre un trade-off tra costi e benefici', 'Aumentare il numero di studenti per corso riduce i costi individuali', 'Aumentare il numero di studenti per corso riduce la qualità dell\'insegnamento', 'Il numero ottimale di studenti è sempre il massimo possibile'], corretta: 3, spiegazione: 'Il numero ottimale di studenti è quello che bilancia costi e benefici, non il massimo possibile.' },
+    { id: 7, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.9-10', domanda: 'Indicare quale affermazione sul concetto di scarsità NON è corretta.', opzioni: ['Una risorsa si definisce scarsa in relazione alla domanda', 'Il tempo è una risorsa scarsa per tutti', 'La scarsità implica sempre una valutazione monetaria', 'Anche in un ristorante "all you can eat" esiste una risorsa scarsa'], corretta: 2, spiegazione: 'Scarsità non implica necessariamente una valutazione monetaria.' },
+    { id: 8, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.15', domanda: 'Indicare quale affermazione sul concetto di beneficio NON è corretta.', opzioni: ['B(x) è il beneficio associato all\'attività x', 'B(x) può essere misurato come prezzo massimo che si è disposti a pagare', 'B(x) include solo benefici monetari diretti', 'B(x) può includere benefici non monetari'], corretta: 2, spiegazione: 'B(x) include anche benefici non monetari, come la soddisfazione personale.' },
+    { id: 9, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.15', domanda: 'Indicare quale affermazione sul concetto di costo NON è corretta.', opzioni: ['C(x) è il costo associato all\'attività x', 'C(x) include il valore delle risorse a cui si rinuncia', 'C(x) include solo costi monetari diretti', 'C(x) include il costo-opportunità'], corretta: 2, spiegazione: 'C(x) include anche costi non monetari come il tempo e la fatica.' },
+    { id: 10, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.11', domanda: 'Indicare quale affermazione sul numero ottimale di studenti NON è corretta.', opzioni: ['Il numero ottimale bilancia costi e benefici', 'Più studenti riducono i costi individuali', 'Più studenti riducono la qualità dell\'insegnamento', 'Il numero ottimale è sempre 1 studente per insegnante'], corretta: 3, spiegazione: '1 studente per insegnante massimizza la qualità ma è economicamente insostenibile.' },
+    { id: 11, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.13-14', domanda: 'Indicare quale affermazione sul principio costi-benefici NON è corretta.', opzioni: ['Il principio costi-benefici è applicabile solo a decisioni monetarie', 'Il principio costi-benefici può essere applicato a decisioni non monetarie', 'Il principio costi-benefici richiede di confrontare benefici e costi marginali', 'Il principio costi-benefici aiuta a prendere decisioni razionali'], corretta: 0, spiegazione: 'Il principio costi-benefici è applicabile anche a decisioni non monetarie (es. alzarsi per bere acqua).' },
+    { id: 12, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.16', domanda: 'Indicare quale affermazione sul prezzo di riserva NON è corretta.', opzioni: ['Il prezzo di riserva è soggettivo', 'Il prezzo di riserva varia da persona a persona', 'Il prezzo di riserva è sempre oggettivo', 'Il prezzo di riserva può essere usato per valutare benefici non monetari'], corretta: 2, spiegazione: 'Il prezzo di riserva è soggettivo e varia da persona a persona.' },
+    { id: 13, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.9-10', domanda: 'Indicare quale affermazione sulla scarsità NON è corretta.', opzioni: ['La scarsità è un problema economico fondamentale', 'La scarsità esiste perché i bisogni umani sono illimitati', 'La scarsità esiste perché le risorse sono limitate', 'La scarsità non esiste nelle economie avanzate'], corretta: 3, spiegazione: 'La scarsità esiste in TUTTE le economie, perché i bisogni sono sempre illimitati e le risorse limitate.' },
+    { id: 14, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.13-14', domanda: 'Indicare quale affermazione sui costi e benefici marginali NON è corretta.', opzioni: ['Il costo marginale è il costo di un\'unità aggiuntiva', 'Il beneficio marginale è il beneficio di un\'unità aggiuntiva', 'Si consuma finché il beneficio marginale supera il costo marginale', 'Si consuma finché il beneficio medio supera il costo medio'], corretta: 3, spiegazione: 'Si usano i valori MARGINALI (non medi) per decidere fino a che punto portare avanti un\'attività.' },
+    { id: 15, argomento: 'Principio Costi-Benefici', lezione: 'Lezione 1', slide: 'Pag.16', domanda: 'Indicare quale affermazione sul costo-opportunità NON è corretta.', opzioni: ['Il costo-opportunità è il valore dell\'alternativa migliore a cui si rinuncia', 'Il costo-opportunità è sempre un costo monetario', 'Il costo-opportunità del tempo libero è il salario che si potrebbe guadagnare lavorando', 'Il costo-opportunità è soggettivo'], corretta: 1, spiegazione: 'Il costo-opportunità può essere non monetario, come il tempo o la fatica.' },
+    // LEZIONE 1 - ERRORI DECISIONALI
+    { id: 16, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.17-18', domanda: 'Indicare quale affermazione sul costo-opportunità NON è corretta.', opzioni: ['Il costo-opportunità è il valore dell\'alternativa migliore a cui si rinuncia', 'Il costo-opportunità ha natura non-monetaria in molte decisioni', 'Il costo-opportunità va ignorato perché non è un esborso di denaro', 'Ogni risorsa, incluso il tempo, ha un costo-opportunità'], corretta: 2, spiegazione: 'Il costo-opportunità VA CONSIDERATO perché ogni risorsa ha un costo in termini di utilizzo alternativo.' },
+    { id: 17, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.19-21', domanda: 'Indicare quale affermazione sui costi non recuperabili (sunk cost) NON è corretta.', opzioni: ['I sunk cost sono costi già sostenuti e irrecuperabili', 'I sunk cost NON vanno considerati nelle decisioni future', 'L\'assicurazione auto già pagata è un sunk cost da ignorare', 'L\'assicurazione auto è un sunk cost da considerare per decidere se fare un viaggio'], corretta: 3, spiegazione: 'L\'assicurazione auto è un sunk cost (già pagata) e va IGNORATA. Contano benzina, pedaggio, usura.' },
+    { id: 18, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.22-27', domanda: 'Indicare quale affermazione sugli errori decisionali NON è corretta.', opzioni: ['Misurare costi e benefici in percentuale può essere utile in alcuni contesti', 'Il beneficio marginale è il beneficio per un\'unità aggiuntiva', 'Il costo marginale è il costo per un\'unità aggiuntiva', 'Il principio costi-benefici usa il beneficio medio, non quello marginale'], corretta: 3, spiegazione: 'Si usano i valori MARGINALI (non medi) per decidere fino a che punto portare avanti un\'attività.' },
+    { id: 19, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.23-27', domanda: 'Indicare quale affermazione sui valori marginali NON è corretta.', opzioni: ['Il beneficio marginale decresce al crescere delle unità consumate', 'Il costo marginale è la variazione del costo totale per un\'unità aggiuntiva', 'Si consumano le unità con B\'(x) > C\'(x)', 'Il beneficio marginale aumenta al crescere delle unità consumate'], corretta: 3, spiegazione: 'Il beneficio marginale DECRESCE (utilità marginale decrescente).' },
+    { id: 20, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.17-18', domanda: 'Indicare quale affermazione sul costo-opportunità NON è corretta.', opzioni: ['Il costo-opportunità è il valore della migliore alternativa scartata', 'Se andate a Mondello, il costo-opportunità include la lezione privata che non fate', 'Il costo-opportunità è sempre facilmente quantificabile', 'Il costo-opportunità può variare da persona a persona'], corretta: 2, spiegazione: 'Il costo-opportunità può essere difficile da quantificare perché è soggettivo.' },
+    { id: 21, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.19-21', domanda: 'Indicare quale affermazione sui sunk cost NON è corretta.', opzioni: ['I sunk cost sono costi che non possono essere recuperati', 'I sunk cost vanno ignorati nelle decisioni razionali', 'Le persone spesso si fanno influenzare dai sunk cost', 'I sunk cost vanno sempre considerati perché rappresentano un investimento'], corretta: 3, spiegazione: 'I sunk cost vanno IGNORATI, non considerati. È un errore comune lasciarsi influenzare.' },
+    { id: 22, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.22-23', domanda: 'Indicare quale affermazione sugli errori di misurazione NON è corretta.', opzioni: ['Misurare costi e benefici in percentuale può essere utile', 'Il contesto è importante per valutare una distanza o un costo', '10 km possono essere "tanti" o "pochi" a seconda del contesto', 'I valori assoluti sono sempre più utili dei valori percentuali'], corretta: 3, spiegazione: 'Anche i valori percentuali possono essere utili, come nell\'esempio del viaggio lungo 300 km vs 12 km.' },
+    { id: 23, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.23-27', domanda: 'Indicare quale affermazione sui costi e benefici marginali NON è corretta.', opzioni: ['Il beneficio marginale è il beneficio di un\'unità aggiuntiva', 'Il costo marginale è il costo di un\'unità aggiuntiva', 'Si consuma finché B\'(x) > C\'(x)', 'Si consuma finché B\'(x) = C\'(x), poi ci si ferma'], corretta: 3, spiegazione: 'Ci si ferma quando B\'(x) = C\'(x). Le unità con B\'(x) < C\'(x) non vanno consumate.' },
+    { id: 24, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.22-23', domanda: 'Indicare quale affermazione sull\'errore di misurazione NON è corretta.', opzioni: ['Misurare costi e benefici in termini assoluti può trarre in inganno', 'Un costo di 100€ può essere "tanto" o "poco" a seconda del contesto', 'È sempre meglio ragionare in termini percentuali', 'Il contesto è importante per valutare costi e benefici'], corretta: 2, spiegazione: 'Non è sempre meglio ragionare in percentuale. Dipende dal contesto.' },
+    { id: 25, argomento: 'Errori Decisionali', lezione: 'Lezione 1', slide: 'Pag.17-21', domanda: 'Indicare quale affermazione sui costi decisionali NON è corretta.', opzioni: ['Il costo-opportunità è il valore dell\'alternativa migliore a cui si rinuncia', 'I costi non recuperabili (sunk cost) devono essere considerati nelle decisioni future', 'Ogni risorsa, incluso il tempo, ha un costo-opportunità', 'Il costo-opportunità ha natura non-monetaria in molte decisioni'], corretta: 1, spiegazione: 'I costi non recuperabili (sunk cost) NON devono essere considerati nelle decisioni future.' },
+    // LEZIONE 2 - DOMANDA E OFFERTA
+    { id: 26, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.4-7', domanda: 'Indicare quale affermazione sulla domanda e sull\'offerta NON è corretta.', opzioni: ['La domanda è la relazione tra quantità acquistata e prezzo', 'L\'offerta è la relazione tra quantità venduta e prezzo', 'La curva di domanda ha pendenza positiva', 'La quantità domandata ha senso solo in riferimento a un prezzo'], corretta: 2, spiegazione: 'La curva di domanda ha pendenza NEGATIVA: all\'aumentare del prezzo, la quantità domandata diminuisce.' },
+    { id: 27, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.8-12', domanda: 'Indicare quale affermazione sul prezzo di equilibrio NON è corretta.', opzioni: ['Il prezzo di equilibrio si ha quando Qd = Qs', 'Se P > Pe, si verifica un eccesso di offerta', 'Se P < Pe, si verifica un eccesso di domanda', 'Il mercato non tende mai automaticamente all\'equilibrio'], corretta: 3, spiegazione: 'Il mercato tende AUTOMATICAMENTE all\'equilibrio attraverso l\'aggiustamento dei prezzi.' },
+    { id: 28, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.20-28', domanda: 'Indicare quale affermazione sugli spostamenti della domanda NON è corretta.', opzioni: ['Un aumento del reddito per un bene normale sposta la curva a destra', 'Un aumento del prezzo di un bene sostituto sposta la curva a destra', 'Una variazione del prezzo del bene stesso sposta la curva di domanda', 'Un cambiamento dei gusti dei consumatori sposta la curva di domanda'], corretta: 2, spiegazione: 'La variazione del prezzo del bene stesso provoca un MOVIMENTO LUNGO la curva, non uno spostamento.' },
+    { id: 29, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.29-33', domanda: 'Indicare quale affermazione sugli spostamenti dell\'offerta NON è corretta.', opzioni: ['Un miglioramento della tecnologia sposta la curva a destra', 'Un aumento dei prezzi dei fattori produttivi sposta la curva a sinistra', 'Una variazione del prezzo del bene sposta la curva di offerta', 'Una regolamentazione più rigida sposta la curva a sinistra'], corretta: 2, spiegazione: 'La variazione del prezzo del bene provoca un MOVIMENTO LUNGO la curva, non uno spostamento.' },
+    { id: 30, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.20-21', domanda: 'Indicare quale affermazione sui beni correlati NON è corretta.', opzioni: ['Autobus e metropolitana sono beni sostituti', 'Petrolio e automobili sono beni complementari', 'Un aumento del prezzo di un bene riduce la domanda dei suoi complementari', 'Un aumento del prezzo di un bene riduce la domanda dei suoi sostituti'], corretta: 3, spiegazione: 'Un aumento del prezzo di un bene AUMENTA la domanda dei suoi sostituti.' },
+    { id: 31, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.8-12', domanda: 'Indicare quale affermazione sull\'eccesso di domanda NON è corretta.', opzioni: ['L\'eccesso di domanda si verifica quando P < Pe', 'In eccesso di domanda, i venditori aumentano i prezzi', 'In eccesso di domanda, la quantità scambiata è determinata dall\'offerta', 'In eccesso di domanda, i venditori abbassano i prezzi'], corretta: 3, spiegazione: 'In eccesso di domanda, i venditori AUMENTANO i prezzi per approfittare della scarsità.' },
+    { id: 32, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.8-12', domanda: 'Indicare quale affermazione sull\'eccesso di offerta NON è corretta.', opzioni: ['L\'eccesso di offerta si verifica quando P > Pe', 'In eccesso di offerta, i venditori abbassano i prezzi', 'In eccesso di offerta, la quantità scambiata è determinata dalla domanda', 'In eccesso di offerta, i venditori aumentano i prezzi'], corretta: 3, spiegazione: 'In eccesso di offerta, i venditori ABBASSANO i prezzi per smaltire le scorte.' },
+    { id: 33, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.4-7', domanda: 'Indicare quale affermazione sulla curva di domanda NON è corretta.', opzioni: ['La curva di domanda ha inclinazione negativa', 'La curva di domanda rappresenta la relazione tra prezzo e quantità domandata', 'La curva di domanda è sempre una retta', 'La curva di domanda può essere rappresentata da una tabella o da un grafico'], corretta: 2, spiegazione: 'La curva di domanda non è sempre una retta; può avere forme diverse.' },
+    { id: 34, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.4-7', domanda: 'Indicare quale affermazione sulla curva di offerta NON è corretta.', opzioni: ['La curva di offerta ha inclinazione positiva', 'La curva di offerta rappresenta la relazione tra prezzo e quantità offerta', 'La curva di offerta è sempre una retta', 'La curva di offerta può essere rappresentata da una tabella o da un grafico'], corretta: 2, spiegazione: 'La curva di offerta non è sempre una retta; può avere forme diverse.' },
+    { id: 35, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.16-17', domanda: 'Indicare quale affermazione sul surplus del consumatore NON è corretta.', opzioni: ['Il surplus del consumatore è la differenza tra prezzo massimo che si è disposti a pagare e prezzo effettivo', 'Il surplus del consumatore è rappresentato dall\'area tra la curva di domanda e il prezzo di equilibrio', 'Il surplus del consumatore aumenta se il prezzo diminuisce', 'Il surplus del consumatore è sempre negativo'], corretta: 3, spiegazione: 'Il surplus del consumatore è sempre positivo o al massimo zero.' },
+    { id: 36, argomento: 'Domanda e Offerta', lezione: 'Lezione 2', slide: 'Pag.16-17', domanda: 'Indicare quale affermazione sul surplus del produttore NON è corretta.', opzioni: ['Il surplus del produttore è la differenza tra prezzo effettivo e prezzo minimo che si è disposti ad accettare', 'Il surplus del produttore è rappresentato dall\'area tra il prezzo di equilibrio e la curva di offerta', 'Il surplus del produttore aumenta se il prezzo aumenta', 'Il surplus del produttore è sempre negativo'], corretta: 3, spiegazione: 'Il surplus del produttore è sempre positivo o al massimo zero.' },
+    // LEZIONE 3 - ELASTICITÀ
+    { id: 37, argomento: 'Elasticità della Domanda', lezione: 'Lezione 3', slide: 'Pag.9-11', domanda: 'Indicare quale affermazione sull\'elasticità della domanda NON è corretta.', opzioni: ['L\'elasticità della domanda rispetto al prezzo è sempre negativa (o zero)', 'Se |ε| > 1, la domanda è elastica', 'L\'elasticità è costante in tutti i punti di una curva lineare', 'Più sostituti ha un bene, più elastica è la sua domanda'], corretta: 2, spiegazione: 'L\'elasticità VARIA in ogni punto di una curva lineare.' },
+    { id: 38, argomento: 'Elasticità della Domanda', lezione: 'Lezione 3', slide: 'Pag.18-19', domanda: 'Indicare quale affermazione su domanda elastica e rigida NON è corretta.', opzioni: ['Se elastica, ridurre il prezzo aumenta il ricavo', 'Se rigida, aumentare il prezzo aumenta il ricavo', 'Il ricavo è massimo quando |ε| = 1', 'Se elastica, aumentare il prezzo aumenta il ricavo'], corretta: 3, spiegazione: 'Se elastica (|ε| > 1), un AUMENTO del prezzo RIDUCE il ricavo.' },
+    { id: 39, argomento: 'Elasticità Incrociata e Reddito', lezione: 'Lezione 3', slide: 'Pag.27-29', domanda: 'Indicare quale affermazione sull\'elasticità incrociata NON è corretta.', opzioni: ['È positiva per i beni sostituti', 'È negativa per i beni complementari', 'Tè e caffè hanno elasticità incrociata positiva', 'Auto e benzina hanno elasticità incrociata positiva'], corretta: 3, spiegazione: 'Auto e benzina sono beni COMPLEMENTARI, quindi l\'elasticità incrociata è NEGATIVA.' },
+    { id: 40, argomento: 'Elasticità Incrociata e Reddito', lezione: 'Lezione 3', slide: 'Pag.31-34', domanda: 'Indicare quale affermazione sull\'elasticità al reddito NON è corretta.', opzioni: ['Per i beni inferiori è negativa', 'Per i beni normali è positiva (0 < η < 1)', 'Per i beni di lusso è > 1', 'Per i beni inferiori è positiva'], corretta: 3, spiegazione: 'Per i beni INFERIORI, l\'elasticità al reddito è NEGATIVA.' },
+    // LEZIONE 4 - VINCOLO DI BILANCIO
+    { id: 41, argomento: 'Vincolo di Bilancio', lezione: 'Lezione 4', slide: 'Pag.5-8', domanda: 'Indicare quale affermazione sul vincolo di bilancio NON è corretta.', opzioni: ['La pendenza rappresenta il prezzo relativo tra due beni', 'Aumento del reddito → spostamento parallelo a destra', 'Aumento del prezzo di un bene → cambia la pendenza', 'Aumento del reddito → cambia la pendenza'], corretta: 3, spiegazione: 'Un aumento del reddito NON modifica la pendenza (che dipende solo dai prezzi).' },
+    { id: 42, argomento: 'Curve di Indifferenza', lezione: 'Lezione 4', slide: 'Pag.13-23', domanda: 'Indicare quale affermazione sulle curve di indifferenza NON è corretta.', opzioni: ['Hanno pendenza negativa per la non sazietà', 'Non si intersecano per la transitività', 'Il MRS è la pendenza della curva', 'Due curve di indifferenza possono intersecarsi'], corretta: 3, spiegazione: 'Le curve di indifferenza NON possono intersecarsi MAI.' },
+    { id: 43, argomento: 'Scelta del Consumatore', lezione: 'Lezione 4', slide: 'Pag.24-29', domanda: 'Indicare quale affermazione sulla scelta ottima NON è corretta.', opzioni: ['L\'ottimo è nel punto di tangenza tra vincolo e curva più alta', 'Nell\'ottimo, MRS = rapporto dei prezzi', 'Nell\'ottimo, il consumatore spende tutto il reddito', 'La scelta del consumatore non è vincolata dal reddito'], corretta: 3, spiegazione: 'La scelta del consumatore È vincolata dal reddito e dai prezzi di mercato.' },
+    // LEZIONE 5 - TEORIA DELL'OFFERTA
+    { id: 44, argomento: 'Teoria dell\'Offerta', lezione: 'Lezione 5', slide: 'Pag.4-7', domanda: 'Indicare quale affermazione su costi e ricavi NON è corretta.', opzioni: ['Il profitto è RT - CT', 'Il costo marginale è CT / Q', 'Il ricavo marginale è la variazione di RT per unità aggiuntiva', 'Il costo marginale è la variazione di CT per unità aggiuntiva'], corretta: 1, spiegazione: 'Il costo marginale è la VARIAZIONE del costo totale (ΔCT/ΔQ), non CT/Q.' },
+    { id: 45, argomento: 'Massimizzazione del Profitto', lezione: 'Lezione 5', slide: 'Pag.22-31', domanda: 'Indicare quale affermazione sulla massimizzazione del profitto NON è corretta.', opzioni: ['La quantità ottima è quella con MR = MC', 'Se MR > MC, conviene aumentare la produzione', 'Se MR < MC, conviene ridurre la produzione', 'Basta che il profitto totale sia positivo, indipendentemente da MR e MC'], corretta: 3, spiegazione: 'L\'impresa deve confrontare MR e MC per ogni unità.' },
+    // LEZIONE 6 - BREVE E LUNGO PERIODO
+    { id: 46, argomento: 'Breve e Lungo Periodo', lezione: 'Lezione 6', slide: 'Pag.13-14', domanda: 'Indicare quale affermazione su breve e lungo periodo NON è corretta.', opzioni: ['Nel breve, almeno un fattore è fisso', 'Nel lungo, tutti i fattori sono variabili', 'Nel breve, l\'impresa ha costi fissi anche se produce zero', 'Nel lungo, l\'impresa ha costi fissi anche se produce zero'], corretta: 3, spiegazione: 'Nel lungo periodo TUTTI i costi sono variabili.' },
+    { id: 47, argomento: 'Costi di Breve Periodo', lezione: 'Lezione 6', slide: 'Pag.35-44', domanda: 'Indicare quale affermazione sui costi di breve periodo NON è corretta.', opzioni: ['STC = SFC + SVC', 'SAFC diminuisce all\'aumentare di Q', 'SMC ha forma a U per i rendimenti decrescenti', 'SAFC aumenta all\'aumentare di Q'], corretta: 3, spiegazione: 'SAFC DIMINUISCE all\'aumentare di Q perché si spalma su più unità.' },
+    // LEZIONE 7 - STRUTTURE DI MERCATO
+    { id: 48, argomento: 'Concorrenza Perfetta', lezione: 'Lezione 7', slide: 'Pag.7-11', domanda: 'Indicare quale affermazione sulla concorrenza perfetta NON è corretta.', opzioni: ['Le imprese sono price-taker', 'Il prodotto è omogeneo', 'In concorrenza perfetta, MR = P', 'In concorrenza perfetta, MR < P'], corretta: 3, spiegazione: 'In concorrenza perfetta, MR = P. MR < P è tipico del monopolio.' },
+    { id: 49, argomento: 'Monopolio', lezione: 'Lezione 7', slide: 'Pag.22-28', domanda: 'Indicare quale affermazione sul monopolio NON è corretta.', opzioni: ['Il monopolista è price-maker', 'Nel monopolio, MR < P', 'Il monopolista massimizza con MR = MC', 'Nel monopolio, MR = P'], corretta: 3, spiegazione: 'Nel monopolio MR < P. Se MR = P, sarebbe concorrenza perfetta.' },
+    { id: 50, argomento: 'Concorrenza Monopolistica', lezione: 'Lezione 7', slide: 'Pag.30-39', domanda: 'Indicare quale affermazione sulla concorrenza monopolistica NON è corretta.', opzioni: ['Il prodotto è differenziato', 'Nel breve, l\'impresa può avere extra-profitti', 'Nel lungo, le imprese hanno profitti positivi', 'Nel lungo, l\'entrata di nuove imprese azzera i profitti'], corretta: 2, spiegazione: 'Nel lungo periodo, l\'assenza di barriere all\'entrata fa sì che i profitti siano NULLI.' },
+    // LEZIONE 8 - OLIGOPOLIO
+    { id: 51, argomento: 'Oligopolio', lezione: 'Lezione 8', slide: 'Pag.2-12', domanda: 'Indicare quale affermazione sull\'oligopolio NON è corretta.', opzioni: ['È caratterizzato da interdipendenza strategica', 'Le imprese devono tenere conto delle reazioni dei concorrenti', 'La curva di domanda ad angolo spiega la vischiosità dei prezzi', 'Le imprese non devono preoccuparsi delle reazioni dei concorrenti'], corretta: 3, spiegazione: 'Le imprese in oligopolio DEVONO preoccuparsi delle reazioni dei concorrenti.' },
+    { id: 52, argomento: 'Teoria dei Giochi', lezione: 'Lezione 8', slide: 'Pag.13-24', domanda: 'Indicare quale affermazione sul dilemma del prigioniero NON è corretta.', opzioni: ['La strategia dominante è spesso non cooperare', 'L\'equilibrio di Nash non coincide con l\'ottimo paretiano', 'Nel dilemma, la strategia dominante è cooperare', 'Le imprese hanno incentivo a tradire gli accordi'], corretta: 2, spiegazione: 'Nel dilemma del prigioniero, la strategia dominante è NON COOPERARE.' },
+    // LEZIONE 9 - VALUTAZIONE INVESTIMENTI
+    { id: 53, argomento: 'Capitalizzazione', lezione: 'Lezione 9', slide: 'Pag.4-9', domanda: 'Indicare quale affermazione sulla capitalizzazione NON è corretta.', opzioni: ['Interesse composto: F = P(1+i)^n', 'Interesse semplice: F = P(1+in)', 'Fattore di attualizzazione: 1/(1+i)^n', 'Nell\'interesse composto, gli interessi non sono capitalizzati'], corretta: 3, spiegazione: 'Nell\'interesse composto, gli interessi VENGONO capitalizzati.' },
+    { id: 54, argomento: 'Valutazione Investimenti', lezione: 'Lezione 9', slide: 'Pag.25-34', domanda: 'Indicare quale affermazione sulla valutazione investimenti NON è corretta.', opzioni: ['VAN = somma flussi attualizzati - investimento iniziale', 'Un progetto è accettabile se VAN > 0', 'TIR è il tasso che rende VAN = 0', 'Il Payback considera il valore temporale del denaro'], corretta: 3, spiegazione: 'Il Payback (non attualizzato) NON considera il valore temporale del denaro.' },
+    { id: 55, argomento: 'Valutazione Investimenti', lezione: 'Lezione 9', slide: 'Pag.23-24', domanda: 'Indicare quale affermazione sui costi nella valutazione NON è corretta.', opzioni: ['I costi di opportunità vanno considerati', 'I sunk cost non vanno considerati', 'Il costo-opportunità è il beneficio perso per una decisione', 'I sunk cost vanno considerati'], corretta: 3, spiegazione: 'I sunk cost sono costi già sostenuti e irrecuperabili. NON vanno considerati.' },
+    // MACROECONOMIA
+    { id: 56, argomento: 'Macroeconomia', lezione: 'Lezione 1 (appunti)', slide: 'Pag.4 (prova esame)', domanda: 'Indicare quale affermazione sul PIL NON è corretta.', opzioni: ['I trasferimenti pubblici non vengono inclusi nel calcolo del PIL', 'Il PIL nominale è calcolato a prezzi correnti', 'Il PIL reale è calcolato a prezzi costanti di un anno base', 'Il deflatore del PIL è il rapporto tra PIL reale e PIL nominale'], corretta: 3, spiegazione: 'Il deflatore del PIL è il rapporto tra PIL NOMINALE e PIL REALE: Deflatore = PILnominale / PILreale.' },
+    { id: 57, argomento: 'Macroeconomia', lezione: 'Lezione 1 (appunti)', slide: 'Pag.4 (prova esame)', domanda: 'Indicare quale affermazione sul tasso di disoccupazione NON è corretta.', opzioni: ['Il tasso di disoccupazione si calcola considerando solo gli individui in età lavorativa', 'I disoccupati sono coloro che cercano attivamente lavoro', 'Gli inattivi non sono considerati nel calcolo del tasso di disoccupazione', 'Il tasso di disoccupazione include tutti gli individui che non lavorano'], corretta: 3, spiegazione: 'Il tasso di disoccupazione NON include tutti i non occupati (esclude studenti, pensionati, inattivi).' },
+    { id: 58, argomento: 'Macroeconomia', lezione: 'Lezione 1 (appunti)', slide: 'Pag.4 (prova esame)', domanda: 'Indicare quale affermazione sul PIL pro capite NON è corretta.', opzioni: ['Il PIL pro capite è il PIL diviso per il numero di abitanti', 'Il PIL pro capite è un indicatore del benessere medio', 'Il PIL pro capite può crescere anche se il PIL totale non cresce', 'Il PIL pro capite è il PIL diviso per il numero di imprese'], corretta: 3, spiegazione: 'Il PIL pro capite è il PIL diviso per il numero di ABITANTI, non per il numero di imprese.' }
+];
+
+// ============================================================
+// LOGICA APP
+// ============================================================
+
+const TOTALE_DOMANDE = DOMANDE.length;
+let progressi = caricaProgressi();
+let quizDomande = [],
+    quizRisposte = [],
+    domandaCorrente = 0;
+
+function caricaProgressi() {
+    try {
+        const saved = localStorage.getItem('econoquiz_progressi');
+        if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return { quiz_completati: 0, domande_fatte: 0, risposte_corrette: 0, domande_visitate: [], errori_per_argomento: {}, saltate: 0, cronologia: [] };
+}
+
+function salvaProgressi() {
+    localStorage.setItem('econoquiz_progressi', JSON.stringify(progressi));
+}
+
+function mostraPagina(id) {
+    document.querySelectorAll('#homePage, #quizPage, #resultPage, #progressPage, #erroriPage, #cronologiaPage')
+        .forEach(el => el.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+}
+
+function tornaHome() { mostraPagina('homePage');
+    aggiornaHome(); }
+
+function aggiornaHome() {
+    document.getElementById('statQuiz').textContent = progressi.quiz_completati;
+    const media = progressi.domande_fatte > 0 ? Math.round((progressi.risposte_corrette / progressi.domande_fatte) * 100) : 0;
+    document.getElementById('statMedia').textContent = media + '%';
+    const completato = Math.min(100, Math.round((progressi.domande_visitate.length / TOTALE_DOMANDE) * 100));
+    document.getElementById('statCompletato').textContent = completato + '%';
+    document.getElementById('totaleDomande').textContent = TOTALE_DOMANDE;
+    const errori = progressi.errori_per_argomento || {};
+    const list = document.getElementById('weakTopicsList');
+    if (Object.keys(errori).length === 0) {
+        list.innerHTML = 'Nessun errore. Continua così! 🎉';
+    } else {
+        const sorted = Object.entries(errori).sort((a, b) => b[1] - a[1]);
+        let html = '';
+        for (let i = 0; i < Math.min(3, sorted.length); i++) {
+            html += `<div>${sorted[i][0]}: ${sorted[i][1]} errori</div>`;
+        }
+        list.innerHTML = html;
+    }
+}
+
+function iniziaQuiz() {
+    let disponibili = DOMANDE.filter(d => !progressi.domande_visitate.includes(d.id));
+    if (disponibili.length < 6) disponibili = [...DOMANDE];
+    for (let i = disponibili.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [disponibili[i], disponibili[j]] = [disponibili[j], disponibili[i]];
+    }
+    quizDomande = disponibili.slice(0, 6);
+    quizRisposte = [];
+    domandaCorrente = 0;
+    mostraPagina('quizPage');
+    renderDomanda();
+}
+
+function renderDomanda() {
+    const container = document.getElementById('questionsContainer');
+    const d = quizDomande[domandaCorrente];
+    const totale = quizDomande.length;
+    document.getElementById('quizProgress').textContent = `Domanda ${domandaCorrente + 1} di ${totale}`;
+    document.getElementById('progressFill').style.width = `${((domandaCorrente + 1) / totale) * 100}%`;
+    const lettere = ['a', 'b', 'c', 'd'];
+    const rispostaData = quizRisposte[domandaCorrente];
+    let html =
+        `<div class="question-box"><span class="question-topic">${d.argomento}</span> <span style="font-size:.6rem;color:#999;">${d.lezione} ${d.slide}</span><div class="question-text">${d.domanda}</div><div class="options">`;
+    for (let i = 0; i < d.opzioni.length; i++) {
+        const isSelected = (rispostaData !== undefined && rispostaData === i);
+        const selectedClass = isSelected ? 'selected' : '';
+        html += `<div class="option ${selectedClass}" onclick="selezionaOpzione(${domandaCorrente}, ${i})"><span class="letter">${lettere[i].toUpperCase()}</span><span>${d.opzioni[i]}</span></div>`;
+    }
+    html += `</div></div>`;
+    container.innerHTML = html;
+    document.getElementById('nextBtn').style.display = (domandaCorrente === totale - 1) ? 'none' : 'block';
+    document.getElementById('submitBtn').style.display = (domandaCorrente === totale - 1) ? 'block' : 'none';
+}
+
+function selezionaOpzione(indice, valore) {
+    // Se è già selezionata, deseleziona (toggle)
+    if (quizRisposte[indice] === valore) {
+        quizRisposte[indice] = undefined;
+    } else {
+        quizRisposte[indice] = valore;
+    }
+    renderDomanda();
+}
+
+function cambiaDomanda(direzione) {
+    // Se la domanda corrente non ha risposta, la salta automaticamente (la segna come saltata)
+    if (quizRisposte[domandaCorrente] === undefined) {
+        quizRisposte[domandaCorrente] = -1;
+    }
+    const nuova = domandaCorrente + direzione;
+    if (nuova >= 0 && nuova < quizDomande.length) {
+        domandaCorrente = nuova;
+        renderDomanda();
+    }
+}
+
+function inviaQuiz() {
+    // Controlla se tutte le domande hanno una risposta
+    for (let i = 0; i < quizDomande.length; i++) {
+        if (quizRisposte[i] === undefined) {
+            // Segna automaticamente come saltata
+            quizRisposte[i] = -1;
+        }
+    }
+
+    let corrette = 0,
+        saltate = 0,
+        dettagli = [];
+    for (let i = 0; i < quizDomande.length; i++) {
+        const d = quizDomande[i];
+        const risposta = quizRisposte[i];
+        const eSaltata = (risposta === -1);
+        const isCorretta = !eSaltata && (risposta === d.corretta);
+        if (eSaltata) saltate++;
+        if (isCorretta) corrette++;
+        if (!progressi.domande_visitate.includes(d.id)) progressi.domande_visitate.push(d.id);
+        if (!isCorretta && !eSaltata) {
+            if (!progressi.errori_per_argomento[d.argomento]) progressi.errori_per_argomento[d.argomento] = 0;
+            progressi.errori_per_argomento[d.argomento]++;
+        }
+        dettagli.push({ domanda: d, risposta: risposta, corretta: isCorretta, saltata: eSaltata, rispostaCorretta: d.corretta });
+    }
+    progressi.quiz_completati++;
+    progressi.domande_fatte += quizDomande.length - saltate;
+    progressi.risposte_corrette += corrette;
+    progressi.saltate = (progressi.saltate || 0) + saltate;
+    progressi.cronologia.push({ data: new Date().toLocaleString(), punteggio: corrette, totale: quizDomande.length,
+        saltate: saltate });
+    salvaProgressi();
+    mostraRisultati(corrette, saltate, dettagli);
+}
+
+function mostraRisultati(corrette, saltate, dettagli) {
+    mostraPagina('resultPage');
+    const totale = dettagli.length;
+    const sbagliate = totale - corrette - saltate;
+    const percentuale = totale - saltate > 0 ? Math.round((corrette / (totale - saltate)) * 100) : 0;
+    document.getElementById('resultScore').innerHTML = `${corrette}<span style="font-size:1.2rem;color:#999;">/${totale - saltate}</span>`;
+    let msg = '';
+    if (saltate === totale) msg = '⏭ Hai saltato tutto! Prova a rispondere.';
+    else if (percentuale === 100) msg = '🎉 PERFETTO! Hai trovato tutte le risposte sbagliate!';
+    else if (percentuale >= 83) msg = '🌟 Ottimo lavoro! Continua così!';
+    else if (percentuale >= 67) msg = '💪 Buon risultato! Rivedi gli errori.';
+    else if (percentuale >= 50) msg = '📖 Ripassa un po\'.';
+    else msg = '🔴 Hai bisogno di studiare di più.';
+    document.getElementById('resultMessage').textContent = msg;
+    document.getElementById('rCorrette').textContent = corrette;
+    document.getElementById('rSaltate').textContent = saltate;
+    document.getElementById('rSbagliate').textContent = sbagliate;
+    const container = document.getElementById('resultDetails');
+    let html = '<h4 style="font-size:.9rem;margin:12px 0 8px;">📖 Dettaglio risposte</h4>';
+    const lettere = ['a', 'b', 'c', 'd'];
+    for (let i = 0; i < dettagli.length; i++) {
+        const d = dettagli[i];
+        const isCorretta = d.corretta;
+        const eSaltata = d.saltata;
+        const rispostaUtente = d.risposta;
+        let classe = 'success',
+            icon = '✅';
+        if (eSaltata) { classe = 'skipped';
+            icon = '⏭'; } else if (!isCorretta) { classe = 'error';
+            icon = '❌'; }
+        html +=
+            `<div class="result-detail ${classe}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:700;">${icon} Domanda ${i+1}</span><span style="font-size:.7rem;">${d.domanda.argomento}</span></div><div style="font-size:.85rem;">${d.domanda.domanda}</div>`;
+        if (eSaltata) {
+            html += `<div style="font-size:.8rem;color:#F1C40F;">Saltata.</div>`;
+        } else if (!isCorretta) {
+            html +=
+                `<div style="font-size:.8rem;color:#E74C3C;">❌ La tua: ${lettere[rispostaUtente].toUpperCase()}</div><div style="font-size:.8rem;color:#2ECC71;">✅ Corretta: ${lettere[d.domanda.corretta].toUpperCase()}</div><div style="font-size:.8rem;">${d.domanda.spiegazione}</div>`;
+        } else {
+            html += `<div style="font-size:.8rem;">${d.domanda.spiegazione}</div>`;
+        }
+        html += `<div class="ref">📄 ${d.domanda.lezione} - ${d.domanda.slide}</div></div>`;
+    }
+    container.innerHTML = html;
+}
+
+function mostraProgressi() {
+    mostraPagina('progressPage');
+    document.getElementById('pQuiz').textContent = progressi.quiz_completati;
+    document.getElementById('pDomande').textContent = progressi.domande_fatte;
+    document.getElementById('pCorrette').textContent = progressi.risposte_corrette;
+    const completato = Math.min(100, Math.round((progressi.domande_visitate.length / TOTALE_DOMANDE) * 100));
+    document.getElementById('pProgressoTesto').textContent = `${progressi.domande_visitate.length}/${TOTALE_DOMANDE}`;
+    document.getElementById('pProgressoBar').style.width = completato + '%';
+    const errori = progressi.errori_per_argomento || {};
+    const container = document.getElementById('pErrori');
+    if (Object.keys(errori).length === 0) {
+        container.innerHTML =
+            '<div style="text-align:center;padding:20px;font-size:2.5rem;">🎉<br><span style="font-size:.9rem;color:#999;">Nessun errore!</span></div>';
+    } else {
+        const sorted = Object.entries(errori).sort((a, b) => b[1] - a[1]);
+        let html = '';
+        for (const [arg, num] of sorted) {
+            html +=
+                `<div class="error-item"><span>${arg}</span><span class="count">${num} errori</span></div>`;
+        }
+        container.innerHTML = html;
+    }
+    const cron = document.getElementById('pCronologia');
+    if (progressi.cronologia.length === 0) {
+        cron.innerHTML = '<div class="text-muted">Nessun quiz completato.</div>';
+    } else {
+        const ultimi = progressi.cronologia.slice(-5).reverse();
+        let html = '';
+        for (const q of ultimi) {
+            const risposte = q.totale - (q.saltate || 0);
+            const perc = risposte > 0 ? Math.round((q.punteggio / risposte) * 100) : 0;
+            html +=
+                `<div class="cron-item"><div><span style="font-weight:700;">${q.data}</span></div><div class="score" style="color:${perc >= 67 ? '#2ECC71' : (perc >= 50 ? '#F1C40F' : '#E74C3C')};">${q.punteggio}/${risposte}</div></div>`;
+        }
+        cron.innerHTML = html;
+    }
+}
+
+function mostraErrori() {
+    mostraPagina('erroriPage');
+    const errori = progressi.errori_per_argomento || {};
+    const container = document.getElementById('erroriList');
+    if (Object.keys(errori).length === 0) {
+        container.innerHTML =
+            '<div style="text-align:center;padding:30px;font-size:3.5rem;">🎉<br><span style="font-size:1rem;color:#999;">Nessun errore! Sei un campione!</span></div>';
+        return;
+    }
+    const sorted = Object.entries(errori).sort((a, b) => b[1] - a[1]);
+    let html = '';
+    for (const [arg, num] of sorted) {
+        const barWidth = Math.min(100, (num / progressi.domande_fatte) * 100 * 5);
+        html +=
+            `<div style="background:#f5f5ff;border-radius:8px;padding:10px;margin:6px 0;border-left:4px solid #E74C3C;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${arg}</span><span style="color:#E74C3C;font-weight:700;">${num} errori</span></div><div style="height:4px;background:#eee;border-radius:4px;margin-top:4px;"><div style="height:100%;width:${barWidth}%;background:#E74C3C;border-radius:4px;"></div></div></div>`;
+    }
+    container.innerHTML = html;
+}
+
+function mostraCronologia() {
+    mostraPagina('cronologiaPage');
+    const container = document.getElementById('cronologiaList');
+    if (progressi.cronologia.length === 0) {
+        container.innerHTML =
+            '<div style="text-align:center;padding:30px;font-size:3.5rem;">📭<br><span style="font-size:1rem;color:#999;">Nessun quiz completato.</span></div>';
+        return;
+    }
+    let html = '';
+    let totaleQuiz = 0,
+        totalePunti = 0,
+        totaleSaltate = 0;
+    const cronologia = [...progressi.cronologia].reverse();
+    for (let idx = 0; idx < cronologia.length; idx++) {
+        const q = cronologia[idx];
+        totaleQuiz++;
+        totalePunti += q.punteggio;
+        totaleSaltate += q.saltate || 0;
+        const risposte = q.totale - (q.saltate || 0);
+        const perc = risposte > 0 ? Math.round((q.punteggio / risposte) * 100) : 0;
+        const icon = perc === 100 ? '🌟' : (perc >= 67 ? '✅' : (perc >= 50 ? '📖' : '🔴'));
+        html +=
+            `<div class="cron-item"><div><span style="font-weight:700;">${icon} Quiz #${totaleQuiz}</span><div class="date">${q.data}</div></div><div style="text-align:right;"><span class="score" style="color:${perc >= 67 ? '#2ECC71' : (perc >= 50 ? '#F1C40F' : '#E74C3C')};">${q.punteggio}/${risposte}</span><div class="date">${perc}%${q.saltate > 0 ? ' • saltate: '+q.saltate : ''}</div></div></div>`;
+    }
+    const mediaCronologia = totaleQuiz > 0 ? Math.round((totalePunti / (totaleQuiz * 6 - totaleSaltate)) * 100) : 0;
+    html +=
+        `<div style="display:flex;justify-content:space-around;padding:12px;background:#f5f5ff;border-radius:8px;margin-top:12px;"><div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:#6C63FF;">${totaleQuiz}</div><div style="font-size:.6rem;color:#999;">Quiz</div></div><div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:#2ECC71;">${totalePunti}</div><div style="font-size:.6rem;color:#999;">Corrette</div></div><div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:#FF6584;">${mediaCronologia}%</div><div style="font-size:.6rem;color:#999;">Media</div></div></div>`;
+    container.innerHTML = html;
+}
+
+function resetProgressi() {
+    if (confirm('⚠️ Cancellerai TUTTI i progressi. Sei sicuro?')) {
+        progressi = { quiz_completati: 0, domande_fatte: 0, risposte_corrette: 0, domande_visitate: [], errori_per_argomento: {},
+            saltate: 0, cronologia: [] };
+        salvaProgressi();
+        aggiornaHome();
+        alert('✅ Progressi resettati!');
+    }
+}
+
+setInterval(salvaProgressi, 10000);
+mostraPagina('homePage');
+aggiornaHome();
+console.log(`📚 EconoQuiz caricato! Domande totali: ${TOTALE_DOMANDE}`);
+</script>
+</body>
+</html>
